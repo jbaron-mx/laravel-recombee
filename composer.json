@@ -1,17 +1,17 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "jbaron-mx/laravel-recombee",
+    "description": "An expressive fluent API wrapper around Recombee's SDK to use within Laravel applications",
     "keywords": [
-        ":vendor_name",
+        "jbaron-mx",
         "laravel",
-        ":package_slug"
+        "laravel-recombee"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/jbaron-mx/laravel-recombee",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Jesus Baron",
+            "email": "jbaron@outlook.com",
             "role": "Developer"
         }
     ],
@@ -35,13 +35,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories"
+            "Baron\\Recombee\\": "src",
+            "Baron\\Recombee\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "Baron\\Recombee\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -56,10 +56,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Baron\\Recombee\\RecombeeServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "Recombee": "Baron\\Recombee\\Facades\\Recombee"
             }
         }
     },

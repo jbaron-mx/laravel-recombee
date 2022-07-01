@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Baron\Recombee\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class RecombeeCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-recombee';
 
     public $description = 'My command';
 
