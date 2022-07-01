@@ -2,9 +2,9 @@
 
 namespace Baron\Recombee;
 
+use Baron\Recombee\Commands\RecombeeCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Baron\Recombee\Commands\RecombeeCommand;
 
 class RecombeeServiceProvider extends PackageServiceProvider
 {
