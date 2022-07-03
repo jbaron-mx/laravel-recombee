@@ -2,18 +2,18 @@
 
 namespace Baron\Recombee;
 
-use Baron\Recombee\Builder;
-use Recombee\RecommApi\Client;
 use Baron\Recombee\Support\RecommendationCollection;
 use Illuminate\Support\Arr;
-use Recombee\RecommApi\Requests\ResetDatabase;
+use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\RecommendItemsToUser;
+use Recombee\RecommApi\Requests\ResetDatabase;
 
 class Engine
 {
     public function __construct(
         protected Client $recombee
-    ) {}
+    ) {
+    }
 
     public function reset()
     {
@@ -23,8 +23,8 @@ class Engine
     public function recommendItemsToUser(Builder $builder)
     {
         return $this->map($builder, $this->recombee->send(new RecommendItemsToUser(
-            $builder->getInitiator()->getId(), 
-            $builder->limit, 
+            $builder->getInitiator()->getId(),
+            $builder->limit,
             $builder->prepareOptions()
         )));
     }

@@ -12,7 +12,7 @@ it('resolves from the container', function () {
 
 it('resolves as a Facade', function () {
     $builder = Recombee::getFacadeRoot();
-    
+
     expect($builder instanceof Builder)->toBeTrue();
 });
 
