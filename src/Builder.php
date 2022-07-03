@@ -16,7 +16,7 @@ class Builder
      * Common Properties
      */
     public $cascadeCreate = true;
-    
+
     /**
      * Recommendation Properties
      */
@@ -34,7 +34,8 @@ class Builder
 
     public function __construct(
         protected Engine $engine
-    ) {}
+    ) {
+    }
 
     public function engine(): Engine
     {
@@ -44,12 +45,14 @@ class Builder
     public function for(Model|string $initiator): self
     {
         $this->initiator = new Entity($initiator);
+
         return $this;
     }
 
     public function recommendItems(): self
     {
         $this->action = 'recommendItemsToUser';
+
         return $this;
     }
 

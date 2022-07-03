@@ -3,9 +3,9 @@
 namespace Baron\Recombee;
 
 use Baron\Recombee\Commands\RecombeeCommand;
+use Recombee\RecommApi\Client;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Recombee\RecommApi\Client;
 
 class RecombeeServiceProvider extends PackageServiceProvider
 {
@@ -15,7 +15,7 @@ class RecombeeServiceProvider extends PackageServiceProvider
             ->name('laravel-recombee')
             ->hasConfigFile()
             ->hasCommand(RecombeeCommand::class);
-        
+
         $this->app->singleton(Client::class, function ($app) {
             $config = $app['config']->get('recombee');
 

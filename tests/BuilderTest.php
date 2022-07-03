@@ -1,7 +1,7 @@
 <?php
 
-use Baron\Recombee\Support\Entity;
 use Baron\Recombee\Facades\Recombee;
+use Baron\Recombee\Support\Entity;
 use Baron\Recombee\Support\RecommendationCollection;
 use Baron\Recombee\Tests\Fixtures\User;
 use Recombee\RecommApi\Client;
@@ -26,11 +26,11 @@ it('can recommend items to user', function () {
             'recomms' => [
                 ['id' => '111'],
                 ['id' => '222'],
-            ]
+            ],
         ]);
-    
+
     $results = Recombee::for(1)->recommendItems()->get();
-    
+
     expect($results instanceof RecommendationCollection)->toBeTrue();
     expect($results->collection->all())->toBe(['111', '222']);
 });
