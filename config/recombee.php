@@ -1,11 +1,12 @@
 <?php
 
+use Baron\Recombee\Tests\Fixtures\Item;
+use Baron\Recombee\Tests\Fixtures\User;
+
 return [
 
-    'models' => [
-        'user' => App\Models\User::class,
-        'item' => App\Models\Product::class,
-    ],
+    'user' => User::class,
+    'item' => Item::class,
 
     'database' => env('RECOMBEE_DATABASE', 'ytunieve-dev'),
     'secret' => env('RECOMBEE_SECRET', 'YL5ikGCiexMF0jfSwWh3qJtwg0YDY7XzNUyTGkQNEIavHgHrBExkwVWfVuAx8AUM'),

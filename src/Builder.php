@@ -20,11 +20,12 @@ class Builder
     /**
      * Recommendation Properties
      */
+    public string|null $targetUserId = null;
     public $booster;
     public $filter;
     public $logic;
     public $scenario;
-    public $limit = 25;
+    public int $limit = 25;
 
     /**
      * Interaction Properties
@@ -49,9 +50,23 @@ class Builder
         return $this;
     }
 
+    public function seenBy(Model|string $targetUser): self
+    {
+        $this->targetUserId = (new Entity($targetUser))->getId();
+
+        return $this;
+    }
+
+    public function limit(int $limit): self
+    {
+        $this->limit = $limit;
+
+        return $this;
+    }
+
     public function recommendItems(): self
     {
-        $this->action = 'recommendItemsToUser';
+        $this->action = 'recommendItemsTo' . $this->initiator->getEntityKeyName();
 
         return $this;
     }

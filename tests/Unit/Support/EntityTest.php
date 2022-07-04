@@ -1,6 +1,7 @@
 <?php
 
 use Baron\Recombee\Support\Entity;
+use Baron\Recombee\Tests\Fixtures\Item;
 use Baron\Recombee\Tests\Fixtures\User;
 
 it('can instatiate entity from model', function () {
@@ -21,4 +22,22 @@ it('can get id from entity', function () {
 it('can get key name from entity', function () {
     $entity = new Entity(new User());
     expect($entity->getKeyName())->toBe('id');
+});
+
+it('can identify entity as user', function () {
+    $entity = new Entity(new User());
+    expect($entity->isUser())->toBeTrue();
+    expect($entity->isItem())->toBeFalse();
+});
+
+it('can identify entity as item', function () {
+    $entity = new Entity(new Item());
+    expect($entity->isUser())->toBeFalse();
+    expect($entity->isItem())->toBeTrue();
+});
+
+it('can identify entity as user by default', function () {
+    $entity = new Entity(12);
+    expect($entity->isUser())->toBeTrue();
+    expect($entity->isItem())->toBeFalse();
 });
