@@ -13,17 +13,12 @@ it('can instatiate entity from string', function () {
     expect($entity instanceof Entity)->toBeTrue();
 });
 
-it('can get id from model', function () {
+it('can get id from entity', function () {
     $entity = new Entity(new User(['id' => 22]));
     expect($entity->getId())->toBe('22');
 });
 
-it('can get id from string', function () {
-    $entity = new Entity('66');
-    expect($entity->getId())->toBe('66');
-});
-
-it('can get key name', function () {
+it('can get key name from entity', function () {
     $entity = new Entity(new User());
     expect($entity->getKeyName())->toBe('id');
 });
