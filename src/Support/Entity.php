@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Entity
 {
-    protected $id;
-    protected $key;
+    protected string $id;
+    protected string $key = 'id';
 
     public function __construct(Model|string $entity)
     {
@@ -18,7 +18,6 @@ class Entity
             $this->key = $entity->getKeyName();
         } else {
             $this->id = $entity;
-            $this->key = 'id';
         }
     }
 
