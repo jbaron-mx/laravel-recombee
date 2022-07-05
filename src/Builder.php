@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Builder
 {
     protected Entity $initiator;
+    protected Entity $target;
     protected string $action;
 
     /**
@@ -96,8 +97,32 @@ class Builder
         return $this;
     }
 
+    public function purchased(Model|string $item): self
+    {
+        $this->target = new Entity($item);
+        $this->action = 'Purchase';
+        $this->returnProperties = null;
+
+        return $this;
+    }
+
     public function get()
     {
+        return $this->performAction();
+    }
+
+    public function save()
+    {
+        $this->action = 'add' . $this->action;
+
+        return $this->performAction();
+    }
+
+    public function delete()
+    {
+        $this->action = 'delete' . $this->action;
+        $this->cascadeCreate = null;
+
         return $this->performAction();
     }
 
@@ -109,6 +134,11 @@ class Builder
     public function getInitiator(): Entity
     {
         return $this->initiator;
+    }
+
+    public function getTarget(): Entity
+    {
+        return $this->target;
     }
 
     public function prepareOptions(): array

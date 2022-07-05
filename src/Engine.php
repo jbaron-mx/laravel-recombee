@@ -7,6 +7,8 @@ use Baron\Recombee\Support\RecommendationCollection;
 use Baron\Recombee\Support\UserCollection;
 use Illuminate\Support\Arr;
 use Recombee\RecommApi\Client;
+use Recombee\RecommApi\Requests\AddPurchase;
+use Recombee\RecommApi\Requests\DeletePurchase;
 use Recombee\RecommApi\Requests\ListItemPurchases;
 use Recombee\RecommApi\Requests\ListUserPurchases;
 use Recombee\RecommApi\Requests\ListUsers;
@@ -50,6 +52,24 @@ class Engine
             $builder->limit,
             $builder->prepareOptions()
         )));
+    }
+
+    public function addPurchase(Builder $builder)
+    {
+        return $this->recombee->send(new AddPurchase(
+            $builder->getInitiator()->getId(),
+            $builder->getTarget()->getId(),
+            $builder->prepareOptions()
+        )) === 'ok' ? true : false;
+    }
+
+    public function deletePurchase(Builder $builder)
+    {
+        return $this->recombee->send(new DeletePurchase(
+            $builder->getInitiator()->getId(),
+            $builder->getTarget()->getId(),
+            $builder->prepareOptions()
+        )) === 'ok' ? true : false;
     }
 
     public function listUserPurchases(Builder $builder)

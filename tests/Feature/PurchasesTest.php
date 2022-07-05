@@ -4,8 +4,34 @@ use Baron\Recombee\Facades\Recombee;
 use Baron\Recombee\Support\InteractionCollection;
 use Baron\Recombee\Tests\Fixtures\Item;
 use Recombee\RecommApi\Client;
+use Recombee\RecommApi\Requests\AddPurchase;
+use Recombee\RecommApi\Requests\DeletePurchase;
 use Recombee\RecommApi\Requests\ListItemPurchases;
 use Recombee\RecommApi\Requests\ListUserPurchases;
+
+it('can add a purchase of a given item made by a given user', function () {
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(AddPurchase::class)
+        ->andReturn('ok');
+
+    $results = Recombee::for(2)->purchased(509)->save();
+
+    expect($results)->toBeTrue();
+});
+
+it('can delete all purchases of a given item made by a given user', function () {
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(DeletePurchase::class)
+        ->andReturn('ok');
+
+    $results = Recombee::for(2)->purchased(509)->delete();
+
+    expect($results)->toBeTrue();
+});
 
 it('can list all purchases made by a given user', function () {
     $interactions = [[
