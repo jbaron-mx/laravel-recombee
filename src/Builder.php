@@ -16,6 +16,8 @@ class Builder
      * Common Properties
      */
     public $cascadeCreate = true;
+    public $returnProperties = true;
+    public $includedProperties;
 
     /**
      * Recommendation Properties
@@ -64,6 +66,22 @@ class Builder
         return $this;
     }
 
+    public function select(...$properties): self
+    {
+        $this->returnProperties = empty($properties) ? null : true;
+        $this->includedProperties = implode(',', $properties) ?: null;
+
+        return $this;
+    }
+
+    public function users(): self
+    {
+        $this->action = 'listUsers';
+        $this->cascadeCreate = null;
+
+        return $this;
+    }
+
     public function recommendItems(): self
     {
         $this->action = 'recommendItemsTo' . $this->initiator->getEntityKeyName();
@@ -95,6 +113,8 @@ class Builder
             'booster' => $this->booster,
             'timestamp' => $this->timestamp,
             'cascadeCreate' => $this->cascadeCreate,
+            'returnProperties' => $this->returnProperties,
+            'includedProperties' => $this->includedProperties,
         ])->filter()->all();
     }
 

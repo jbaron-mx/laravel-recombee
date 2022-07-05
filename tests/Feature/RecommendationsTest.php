@@ -8,33 +8,37 @@ use Recombee\RecommApi\Requests\RecommendItemsToItem;
 use Recombee\RecommApi\Requests\RecommendItemsToUser;
 
 it('can recommend items to user', function () {
+    $items = [
+        ['id' => '111'],
+        ['id' => '222'],
+    ];
+
     $this->mock(Client::class)
         ->shouldReceive('send')
         ->once()
         ->with(RecommendItemsToUser::class)
         ->andReturn([
-            'recomms' => [
-                ['id' => '111'],
-                ['id' => '222'],
-            ],
+            'recomms' => $items,
         ]);
 
     $results = Recombee::for(1)->recommendItems()->get();
 
     expect($results instanceof RecommendationCollection)->toBeTrue();
-    expect($results->collection->all())->toBe(['111', '222']);
+    expect($results->collection->all())->toEqual($items);
 });
 
 it('can recommend items to item', function () {
+    $items = [
+        ['id' => '111'],
+        ['id' => '222'],
+    ];
+
     $this->mock(Client::class)
         ->shouldReceive('send')
         ->once()
         ->with(RecommendItemsToItem::class)
         ->andReturn([
-            'recomms' => [
-                ['id' => '111'],
-                ['id' => '222'],
-            ],
+            'recomms' => $items,
         ]);
 
     $results = Recombee::for(new Item(['id' => 505]))
@@ -42,5 +46,5 @@ it('can recommend items to item', function () {
         ->get();
 
     expect($results instanceof RecommendationCollection)->toBeTrue();
-    expect($results->collection->all())->toBe(['111', '222']);
+    expect($results->collection->all())->toEqual($items);
 });

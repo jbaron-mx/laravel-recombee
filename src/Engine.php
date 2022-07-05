@@ -3,8 +3,10 @@
 namespace Baron\Recombee;
 
 use Baron\Recombee\Support\RecommendationCollection;
+use Baron\Recombee\Support\UserCollection;
 use Illuminate\Support\Arr;
 use Recombee\RecommApi\Client;
+use Recombee\RecommApi\Requests\ListUsers;
 use Recombee\RecommApi\Requests\RecommendItemsToItem;
 use Recombee\RecommApi\Requests\RecommendItemsToUser;
 use Recombee\RecommApi\Requests\ResetDatabase;
@@ -19,6 +21,13 @@ class Engine
     public function reset()
     {
         return $this->recombee->send(new ResetDatabase());
+    }
+
+    public function listUsers(Builder $builder)
+    {
+        return $this->mapUsers($builder, $this->recombee->send(new ListUsers(
+            $builder->prepareOptions()
+        )));
     }
 
     public function recommendItemsToUser(Builder $builder)
@@ -42,10 +51,12 @@ class Engine
 
     protected function map(Builder $builder, array $results)
     {
-        return (new RecommendationCollection(
-            collect(Arr::get($results, 'recomms'))
-                ->pluck($builder->getInitiator()->getKeyName())
-                ->values()
-        ))->additional(['meta' => Arr::except($results, 'recomms')]);
+        return (new RecommendationCollection(Arr::get($results, 'recomms')))
+            ->additional(['meta' => Arr::except($results, 'recomms')]);
+    }
+
+    protected function mapUsers(Builder $builder, array $results)
+    {
+        return new UserCollection($results);
     }
 }
