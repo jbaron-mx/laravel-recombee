@@ -89,6 +89,13 @@ class Builder
         return $this;
     }
 
+    public function purchases(): self
+    {
+        $this->action = 'list' . $this->initiator->getEntityKeyName() . 'Purchases';
+
+        return $this;
+    }
+
     public function get()
     {
         return $this->performAction();
