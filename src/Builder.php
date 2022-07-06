@@ -167,6 +167,26 @@ class Builder
         return $this;
     }
 
+    public function cart(): self
+    {
+        $this->action = $this->initiator->isUser()
+            ? ['get' => \Baron\Recombee\Actions\Interactions\Cart\ListUserCartAdditions::class]
+            : ['get' => \Baron\Recombee\Actions\Interactions\Cart\ListItemCartAdditions::class];
+
+        return $this;
+    }
+
+    public function addedToCart(Model|string $item): self
+    {
+        $this->target = new Entity($item);
+        $this->action = [
+            'post' => \Baron\Recombee\Actions\Interactions\Cart\AddCartAddition::class,
+            'delete' => \Baron\Recombee\Actions\Interactions\Cart\DeleteCartAddition::class,
+        ];
+
+        return $this;
+    }
+
     public function get()
     {
         return $this->performAction('get');
