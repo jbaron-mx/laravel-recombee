@@ -146,6 +146,27 @@ class Builder
         return $this;
     }
 
+    public function ratings(): self
+    {
+        $this->action = $this->initiator->isUser()
+            ? ['get' => \Baron\Recombee\Actions\Interactions\Ratings\ListUserRatings::class]
+            : ['get' => \Baron\Recombee\Actions\Interactions\Ratings\ListItemRatings::class];
+
+        return $this;
+    }
+
+    public function rated(Model|string $item, ?float $rating = null): self
+    {
+        $this->target = new Entity($item);
+        $this->param('rating', $rating);
+        $this->action = [
+            'post' => \Baron\Recombee\Actions\Interactions\Ratings\AddRating::class,
+            'delete' => \Baron\Recombee\Actions\Interactions\Ratings\DeleteRating::class,
+        ];
+
+        return $this;
+    }
+
     public function get()
     {
         return $this->performAction('get');
