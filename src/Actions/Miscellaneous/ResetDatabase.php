@@ -8,7 +8,7 @@ use Recombee\RecommApi\Requests\ResetDatabase as ApiRequest;
 class ResetDatabase
 {
     protected array $defaultOptions = [
-        'returnProperties' => true
+        'returnProperties' => true,
     ];
 
     public function __construct(protected Builder $builder)

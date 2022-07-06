@@ -1,12 +1,12 @@
 <?php
 
-use Hamcrest\Matchers;
-use Recombee\RecommApi\Client;
+use Baron\Recombee\Collection\InteractionCollection;
 use Baron\Recombee\Facades\Recombee;
 use Baron\Recombee\Tests\Fixtures\Item;
+use Hamcrest\Matchers;
+use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddPurchase;
 use Recombee\RecommApi\Requests\DeletePurchase;
-use Baron\Recombee\Collection\InteractionCollection;
 use Recombee\RecommApi\Requests\ListItemPurchases;
 use Recombee\RecommApi\Requests\ListUserPurchases;
 
@@ -69,7 +69,7 @@ it('can list all the ever-made purchases of a given item', function () {
         ->andReturn($interactions);
 
     $results = Recombee::for(new Item(['id' => 509]))->purchases()->get();
-    
+
     expect($results instanceof InteractionCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($interactions);
 });

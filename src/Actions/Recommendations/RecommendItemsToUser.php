@@ -3,14 +3,14 @@
 namespace Baron\Recombee\Actions\Recommendations;
 
 use Baron\Recombee\Builder;
-use Illuminate\Support\Arr;
 use Baron\Recombee\Collection\RecommendationCollection;
+use Illuminate\Support\Arr;
 use Recombee\RecommApi\Requests\RecommendItemsToUser as ApiRequest;
 
 class RecommendItemsToUser
 {
     protected array $defaultOptions = [
-        'returnProperties' => true
+        'returnProperties' => true,
     ];
 
     public function __construct(protected Builder $builder)

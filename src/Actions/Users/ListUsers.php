@@ -9,7 +9,7 @@ use Recombee\RecommApi\Requests\ListUsers as ApiRequest;
 class ListUsers
 {
     protected array $defaultOptions = [
-        'returnProperties' => true
+        'returnProperties' => true,
     ];
 
     public function __construct(protected Builder $builder)

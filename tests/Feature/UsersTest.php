@@ -1,9 +1,9 @@
 <?php
 
+use Baron\Recombee\Collection\UserCollection;
+use Baron\Recombee\Facades\Recombee;
 use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
-use Baron\Recombee\Facades\Recombee;
-use Baron\Recombee\Collection\UserCollection;
 use Recombee\RecommApi\Requests\ListUsers;
 
 it('can list users', function () {

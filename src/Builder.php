@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Baron\Recombee;
 
-use Illuminate\Support\Arr;
 use Baron\Recombee\Support\Entity;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 class Builder
 {
@@ -16,7 +16,7 @@ class Builder
     protected array $action;
     protected array $params;
     protected array $options;
-    
+
 
     /**
      * Common Properties
@@ -41,7 +41,8 @@ class Builder
     public $timestamp;
     public $rating;
 
-    public function __construct(protected Engine $engine) {
+    public function __construct(protected Engine $engine)
+    {
         $this->options = [];
         $this->params = ['count' => 25];
     }
@@ -79,6 +80,7 @@ class Builder
         }
 
         $this->params[$key] = $value;
+
         return $this;
     }
 
@@ -89,6 +91,7 @@ class Builder
         }
 
         $this->options[$key] = $value;
+
         return $this;
     }
 
@@ -99,6 +102,7 @@ class Builder
         }
 
         $this->param('count', $limit);
+
         return $this;
     }
 
