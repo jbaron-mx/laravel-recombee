@@ -106,6 +106,26 @@ class Builder
         return $this;
     }
 
+    public function views(): self
+    {
+        $this->action = $this->initiator->isUser()
+            ? ['get' => \Baron\Recombee\Actions\Interactions\Views\ListUserDetailViews::class]
+            : ['get' => \Baron\Recombee\Actions\Interactions\Views\ListItemDetailViews::class];
+
+        return $this;
+    }
+
+    public function viewed(Model|string $item): self
+    {
+        $this->target = new Entity($item);
+        $this->action = [
+            'post' => \Baron\Recombee\Actions\Interactions\Views\AddDetailView::class,
+            'delete' => \Baron\Recombee\Actions\Interactions\Views\DeleteDetailView::class,
+        ];
+
+        return $this;
+    }
+
     public function purchases(): self
     {
         $this->action = $this->initiator->isUser()
