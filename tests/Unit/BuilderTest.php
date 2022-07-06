@@ -18,28 +18,22 @@ it('can set initiator using a string', function () {
 
 it('can define a target user', function () {
     $builder = Recombee::seenBy(new User(['id' => 123]));
-    expect($builder->targetUserId)->toBe('123');
+    expect($builder->param('targetUserId'))->toBe('123');
 });
 
 it('can define a query limit', function () {
     $builder = Recombee::limit(50);
-    expect($builder->limit)->toBe(50);
+    expect($builder->limit())->toBe(50);
 });
 
 it('wont return any additional properties', function () {
     $builder = Recombee::select();
-    expect($builder->returnProperties)->toBeNull();
-    expect($builder->includedProperties)->toBeNull();
-});
-
-it('will return all properties', function () {
-    $builder = Recombee::for(1);
-    expect($builder->returnProperties)->toBeTrue();
-    expect($builder->includedProperties)->toBeNull();
+    expect($builder->option('returnProperties'))->toBeNull();
+    expect($builder->option('includedProperties'))->toBeNull();
 });
 
 it('will return selected properties only', function () {
     $builder = Recombee::select('brand', 'category');
-    expect($builder->returnProperties)->toBeTrue();
-    expect($builder->includedProperties)->toEqual('brand,category');
+    expect($builder->option('returnProperties'))->toBeTrue();
+    expect($builder->option('includedProperties'))->toEqual('brand,category');
 });

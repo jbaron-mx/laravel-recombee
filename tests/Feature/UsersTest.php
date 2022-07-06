@@ -1,12 +1,13 @@
 <?php
 
-use Baron\Recombee\Facades\Recombee;
-use Baron\Recombee\Support\UserCollection;
+use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
+use Baron\Recombee\Facades\Recombee;
+use Baron\Recombee\Collection\UserCollection;
 use Recombee\RecommApi\Requests\ListUsers;
 
 it('can list users', function () {
-    $output = [
+    $users = [
         [
             'name' => 'John Doe',
             'userId' => '1',
@@ -16,11 +17,11 @@ it('can list users', function () {
     $this->mock(Client::class)
         ->shouldReceive('send')
         ->once()
-        ->with(ListUsers::class)
-        ->andReturn($output);
+        ->with(Matchers::equalTo(new ListUsers(['returnProperties' => true])))
+        ->andReturn($users);
 
     $results = Recombee::users()->get();
 
     expect($results instanceof UserCollection)->toBeTrue();
-    expect($results->collection->all())->toEqual($output);
+    expect($results->collection->all())->toEqual($users);
 });

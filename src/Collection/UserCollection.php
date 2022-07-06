@@ -1,10 +1,10 @@
 <?php
 
-namespace Baron\Recombee\Support;
+namespace Baron\Recombee\Collection;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class InteractionCollection extends ResourceCollection
+class UserCollection extends ResourceCollection
 {
     public function toArray($request)
     {

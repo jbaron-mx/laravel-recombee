@@ -1,6 +1,6 @@
 <?php
 
-use Baron\Recombee\Support\RecommendationCollection;
+use Baron\Recombee\Collection\RecommendationCollection;
 
 it('can transform to array', function () {
     $results = new RecommendationCollection(['111', '222']);

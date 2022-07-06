@@ -1,9 +1,10 @@
 <?php
 
-use Baron\Recombee\Facades\Recombee;
-use Baron\Recombee\Support\RecommendationCollection;
-use Baron\Recombee\Tests\Fixtures\Item;
 use Recombee\RecommApi\Client;
+use Baron\Recombee\Facades\Recombee;
+use Baron\Recombee\Tests\Fixtures\Item;
+use Baron\Recombee\Collection\RecommendationCollection;
+use Hamcrest\Matchers;
 use Recombee\RecommApi\Requests\RecommendItemsToItem;
 use Recombee\RecommApi\Requests\RecommendItemsToUser;
 
@@ -12,17 +13,15 @@ it('can recommend items to user', function () {
         ['id' => '111'],
         ['id' => '222'],
     ];
-
+    
     $this->mock(Client::class)
         ->shouldReceive('send')
         ->once()
-        ->with(RecommendItemsToUser::class)
-        ->andReturn([
-            'recomms' => $items,
-        ]);
-
+        ->with(Matchers::equalTo(new RecommendItemsToUser("1", 25, ['returnProperties' => true])))
+        ->andReturn(['recomms' => $items]);
+    
     $results = Recombee::for(1)->recommendItems()->get();
-
+    
     expect($results instanceof RecommendationCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($items);
 });
@@ -36,15 +35,11 @@ it('can recommend items to item', function () {
     $this->mock(Client::class)
         ->shouldReceive('send')
         ->once()
-        ->with(RecommendItemsToItem::class)
-        ->andReturn([
-            'recomms' => $items,
-        ]);
+        ->with(Matchers::equalTo(new RecommendItemsToItem("509", null, 25, ['returnProperties' => true])))
+        ->andReturn(['recomms' => $items]);
 
-    $results = Recombee::for(new Item(['id' => 505]))
-        ->recommendItems()
-        ->get();
-
+    $results = Recombee::for(new Item(['id' => 509]))->recommendItems()->get();
+    
     expect($results instanceof RecommendationCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($items);
 });

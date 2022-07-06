@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Baron\Recombee;
 
+use Illuminate\Support\Arr;
 use Baron\Recombee\Support\Entity;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,24 +12,28 @@ class Builder
 {
     protected Entity $initiator;
     protected Entity $target;
-    protected string $action;
+
+    protected array $action;
+    protected array $params;
+    protected array $options;
+    
 
     /**
      * Common Properties
      */
     public $cascadeCreate = true;
-    public $returnProperties = true;
-    public $includedProperties;
+    //public $returnProperties = true;
+    //public $includedProperties;
 
     /**
      * Recommendation Properties
      */
-    public string|null $targetUserId = null;
+    //public string|null $targetUserId = null;
     public $booster;
     public $filter;
     public $logic;
     public $scenario;
-    public int $limit = 25;
+    // public int $limit = 25;
 
     /**
      * Interaction Properties
@@ -36,9 +41,9 @@ class Builder
     public $timestamp;
     public $rating;
 
-    public function __construct(
-        protected Engine $engine
-    ) {
+    public function __construct(protected Engine $engine) {
+        $this->options = [];
+        $this->params = ['count' => 25];
     }
 
     public function engine(): Engine
@@ -53,46 +58,79 @@ class Builder
         return $this;
     }
 
-    public function seenBy(Model|string $targetUser): self
+    public function users(): self
     {
-        $this->targetUserId = (new Entity($targetUser))->getId();
+        $this->action = ['get' => \Baron\Recombee\Actions\Users\ListUsers::class];
 
         return $this;
     }
 
-    public function limit(int $limit): self
+    public function reset()
     {
-        $this->limit = $limit;
+        $this->action = ['delete' => \Baron\Recombee\Actions\Miscellaneous\ResetDatabase::class];
+
+        return $this->delete();
+    }
+
+    public function param(string $key, mixed $value = null): mixed
+    {
+        if (func_num_args() === 1) {
+            return Arr::get($this->params, $key, null);
+        }
+
+        $this->params[$key] = $value;
+        return $this;
+    }
+
+    public function option(string $key, mixed $value = null): mixed
+    {
+        if (func_num_args() === 1) {
+            return Arr::get($this->options, $key, null);
+        }
+
+        $this->options[$key] = $value;
+        return $this;
+    }
+
+    public function limit(?int $limit = null): int|self
+    {
+        if (is_null($limit)) {
+            return $this->param('count');
+        }
+
+        $this->param('count', $limit);
+        return $this;
+    }
+
+    public function seenBy(Model|string $targetUser): self
+    {
+        $this->param('targetUserId', (new Entity($targetUser))->getId());
 
         return $this;
     }
 
     public function select(...$properties): self
     {
-        $this->returnProperties = empty($properties) ? null : true;
-        $this->includedProperties = implode(',', $properties) ?: null;
-
-        return $this;
-    }
-
-    public function users(): self
-    {
-        $this->action = 'listUsers';
-        $this->cascadeCreate = null;
+        $this->option('returnProperties', empty($properties) ? null : true);
+        $this->option('includedProperties', implode(',', $properties) ?: null);
 
         return $this;
     }
 
     public function recommendItems(): self
     {
-        $this->action = 'recommendItemsTo' . $this->initiator->getEntityKeyName();
+        $this->action = $this->initiator->isUser()
+            ? ['get' => \Baron\Recombee\Actions\Recommendations\RecommendItemsToUser::class]
+            : ['get' => \Baron\Recombee\Actions\Recommendations\RecommendItemsToItem::class];
 
         return $this;
     }
 
     public function purchases(): self
     {
-        $this->action = 'list' . $this->initiator->getEntityKeyName() . 'Purchases';
+        $this->action = $this->initiator->isUser()
+            ? ['get' => \Baron\Recombee\Actions\Interactions\Purchases\ListUserPurchases::class]
+            : ['get' => \Baron\Recombee\Actions\Interactions\Purchases\ListItemPurchases::class];
 
         return $this;
     }
@@ -100,35 +138,27 @@ class Builder
     public function purchased(Model|string $item): self
     {
         $this->target = new Entity($item);
-        $this->action = 'Purchase';
-        $this->returnProperties = null;
+        $this->action = [
+            'post' => \Baron\Recombee\Actions\Interactions\Purchases\AddPurchase::class,
+            'delete' => \Baron\Recombee\Actions\Interactions\Purchases\DeletePurchase::class,
+        ];
 
         return $this;
     }
 
     public function get()
     {
-        return $this->performAction();
+        return $this->performAction('get');
     }
 
     public function save()
     {
-        $this->action = 'add' . $this->action;
-
-        return $this->performAction();
+        return $this->performAction('post');
     }
 
     public function delete()
     {
-        $this->action = 'delete' . $this->action;
-        $this->cascadeCreate = null;
-
-        return $this->performAction();
-    }
-
-    public function reset()
-    {
-        return $this->engine()->reset();
+        return $this->performAction('delete');
     }
 
     public function getInitiator(): Entity
@@ -141,22 +171,15 @@ class Builder
         return $this->target;
     }
 
-    public function prepareOptions(): array
+    public function prepareOptions(array $baseOptions = []): array
     {
-        return collect([
-            'scenario' => $this->scenario,
-            'filter' => $this->filter,
-            'logic' => $this->logic,
-            'booster' => $this->booster,
-            'timestamp' => $this->timestamp,
-            'cascadeCreate' => $this->cascadeCreate,
-            'returnProperties' => $this->returnProperties,
-            'includedProperties' => $this->includedProperties,
-        ])->filter()->all();
+        return collect(array_merge($baseOptions, $this->options))
+            ->filter()
+            ->all();
     }
 
-    protected function performAction()
+    protected function performAction(string $verb)
     {
-        return $this->engine()->{$this->action}($this);
+        return (new ($this->action[$verb])($this))->execute();
     }
 }
