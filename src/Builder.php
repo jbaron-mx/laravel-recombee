@@ -17,30 +17,6 @@ class Builder
     protected array $params;
     protected array $options;
 
-
-    /**
-     * Common Properties
-     */
-    public $cascadeCreate = true;
-    //public $returnProperties = true;
-    //public $includedProperties;
-
-    /**
-     * Recommendation Properties
-     */
-    //public string|null $targetUserId = null;
-    public $booster;
-    public $filter;
-    public $logic;
-    public $scenario;
-    // public int $limit = 25;
-
-    /**
-     * Interaction Properties
-     */
-    public $timestamp;
-    public $rating;
-
     public function __construct(protected Engine $engine)
     {
         $this->options = [];
