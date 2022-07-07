@@ -9,6 +9,7 @@ return [
     'item' => Item::class,
 
     'database' => env('RECOMBEE_DATABASE', 'ytunieve-dev'),
-    'secret' => env('RECOMBEE_SECRET', 'YL5ikGCiexMF0jfSwWh3qJtwg0YDY7XzNUyTGkQNEIavHgHrBExkwVWfVuAx8AUM'),
+    'token' => env('RECOMBEE_TOKEN', 'r9ScVmKMe4EjlQoejqQmthiKcuINkSvLJOXQkO6GTxCkiLpoUF5RGAlDgdlJCs88'),
+    'region' => env('RECOMBEE_REGION', 'us-west'),
 
 ];

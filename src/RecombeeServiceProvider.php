@@ -19,7 +19,9 @@ class RecombeeServiceProvider extends PackageServiceProvider
         $this->app->singleton(Client::class, function ($app) {
             $config = $app['config']->get('recombee');
 
-            return new Client($config['database'], $config['secret']);
+            return new Client($config['database'], $config['token'], [
+                'region' => $config['region'],
+            ]);
         });
     }
 }

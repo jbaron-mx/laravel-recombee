@@ -2,7 +2,6 @@
 
 use Baron\Recombee\Collection\InteractionCollection;
 use Baron\Recombee\Facades\Recombee;
-use Baron\Recombee\Tests\Fixtures\Item;
 use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddBookmark;
@@ -17,7 +16,7 @@ it('can add a bookmark of a given item made by a given user', function () {
         ->with(Matchers::equalTo(new AddBookmark("2", "509")))
         ->andReturn('ok');
 
-    $results = Recombee::for(2)->bookmarked(509)->save();
+    $results = Recombee::user(2)->bookmarked(509)->save();
 
     expect($results)->toBeTrue();
 });
@@ -29,7 +28,7 @@ it('can delete all bookmarks of a given item made by a given user', function () 
         ->with(Matchers::equalTo(new DeleteBookmark("2", "509")))
         ->andReturn('ok');
 
-    $results = Recombee::for(2)->bookmarked(509)->delete();
+    $results = Recombee::user(2)->bookmarked(509)->delete();
 
     expect($results)->toBeTrue();
 });
@@ -47,7 +46,7 @@ it('can list all bookmarks made by a given user', function () {
         ->with(Matchers::equalTo(new ListUserBookmarks("2")))
         ->andReturn($interactions);
 
-    $results = Recombee::for(2)->bookmarks()->get();
+    $results = Recombee::user(2)->bookmarks()->get();
 
     expect($results instanceof InteractionCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($interactions);
@@ -66,7 +65,7 @@ it('can list all the ever-made bookmarks of a given item', function () {
         ->with(Matchers::equalTo(new ListItemBookmarks("509")))
         ->andReturn($interactions);
 
-    $results = Recombee::for(new Item(['id' => 509]))->bookmarks()->get();
+    $results = Recombee::item(509)->bookmarks()->get();
 
     expect($results instanceof InteractionCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($interactions);

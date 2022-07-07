@@ -24,13 +24,13 @@ it('can get key name from entity', function () {
     expect($entity->getKeyName())->toBe('id');
 });
 
-it('can identify entity as user', function () {
+it('can identify entity as user from model', function () {
     $entity = new Entity(new User());
     expect($entity->isUser())->toBeTrue();
     expect($entity->isItem())->toBeFalse();
 });
 
-it('can identify entity as item', function () {
+it('can identify entity as item from model', function () {
     $entity = new Entity(new Item());
     expect($entity->isUser())->toBeFalse();
     expect($entity->isItem())->toBeTrue();

@@ -2,7 +2,6 @@
 
 use Baron\Recombee\Collection\InteractionCollection;
 use Baron\Recombee\Facades\Recombee;
-use Baron\Recombee\Tests\Fixtures\Item;
 use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddDetailView;
@@ -17,7 +16,7 @@ it('can add a detail view of a given item made by a given user', function () {
         ->with(Matchers::equalTo(new AddDetailView("2", "509")))
         ->andReturn('ok');
 
-    $results = Recombee::for(2)->viewed(509)->save();
+    $results = Recombee::user(2)->viewed(509)->save();
 
     expect($results)->toBeTrue();
 });
@@ -29,7 +28,7 @@ it('can delete all detail views of a given item made by a given user', function 
         ->with(Matchers::equalTo(new DeleteDetailView("2", "509")))
         ->andReturn('ok');
 
-    $results = Recombee::for(2)->viewed(509)->delete();
+    $results = Recombee::user(2)->viewed(509)->delete();
 
     expect($results)->toBeTrue();
 });
@@ -48,7 +47,7 @@ it('can list all detail views made by a given user', function () {
         ->with(Matchers::equalTo(new ListUserDetailViews("1")))
         ->andReturn($interactions);
 
-    $results = Recombee::for(1)->views()->get();
+    $results = Recombee::user(1)->views()->get();
 
     expect($results instanceof InteractionCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($interactions);
@@ -68,7 +67,7 @@ it('can list all the detail views of a given item ever made by different users',
         ->with(Matchers::equalTo(new ListItemDetailViews("509")))
         ->andReturn($interactions);
 
-    $results = Recombee::for(new Item(['id' => 509]))->views()->get();
+    $results = Recombee::item(509)->views()->get();
 
     expect($results instanceof InteractionCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($interactions);

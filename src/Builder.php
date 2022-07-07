@@ -28,9 +28,16 @@ class Builder
         return $this->engine;
     }
 
-    public function for(Model|string $initiator): self
+    public function user(Model|string $userId, array $values = []): self
     {
-        $this->initiator = new Entity($initiator);
+        $this->initiator = new Entity($userId, $values, Entity::USER);
+
+        return $this;
+    }
+
+    public function item(Model|string $itemId, array $values = []): self
+    {
+        $this->initiator = new Entity($itemId, $values, Entity::ITEM);
 
         return $this;
     }
@@ -47,6 +54,15 @@ class Builder
         $this->action = ['delete' => \Baron\Recombee\Actions\Miscellaneous\ResetDatabase::class];
 
         return $this->delete();
+    }
+
+    public function recommendable()
+    {
+        $this->action = $this->getInitiator()->isUser()
+            ? ['post' => \Baron\Recombee\Actions\Users\AddUser::class]
+            : ['post' => \Baron\Recombee\Actions\Items\AddItem::class];
+
+        return $this->save();
     }
 
     public function param(string $key, mixed $value = null): mixed

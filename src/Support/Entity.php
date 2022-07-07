@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Entity
 {
-    protected const USER = 'User';
-    protected const ITEM = 'Item';
+    public const USER = 'User';
+    public const ITEM = 'Item';
 
     protected string $id;
     protected string $key = 'id';
-    protected string $type = self::USER;
+    protected string $type;
+    protected array $values = [];
 
-    public function __construct(Model|string $entity)
+    public function __construct(Model|string $entity, array $values = [], string $type = self::USER)
     {
         $userClass = config('recombee.user');
         $itemClass = config('recombee.item');
@@ -29,6 +30,8 @@ class Entity
             };
         } else {
             $this->id = $entity;
+            $this->values = $values;
+            $this->type = $type;
         }
     }
 
@@ -45,6 +48,11 @@ class Entity
     public function getEntityKeyName()
     {
         return $this->type;
+    }
+
+    public function getValues()
+    {
+        return $this->values;
     }
 
     public function isUser()

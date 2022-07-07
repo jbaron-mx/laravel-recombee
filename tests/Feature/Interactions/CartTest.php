@@ -2,7 +2,6 @@
 
 use Baron\Recombee\Collection\InteractionCollection;
 use Baron\Recombee\Facades\Recombee;
-use Baron\Recombee\Tests\Fixtures\Item;
 use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddCartAddition;
@@ -17,7 +16,7 @@ it('can add a cart addition of a given item made by a given user', function () {
         ->with(Matchers::equalTo(new AddCartAddition("2", "509")))
         ->andReturn('ok');
 
-    $results = Recombee::for(2)->carted(509)->save();
+    $results = Recombee::user(2)->carted(509)->save();
 
     expect($results)->toBeTrue();
 });
@@ -29,7 +28,7 @@ it('can delete all cart additions of a given item made by a given user', functio
         ->with(Matchers::equalTo(new DeleteCartAddition("2", "509")))
         ->andReturn('ok');
 
-    $results = Recombee::for(2)->carted(509)->delete();
+    $results = Recombee::user(2)->carted(509)->delete();
 
     expect($results)->toBeTrue();
 });
@@ -48,7 +47,7 @@ it('can list all cart additions made by a given user', function () {
         ->with(Matchers::equalTo(new ListUserCartAdditions("1")))
         ->andReturn($interactions);
 
-    $results = Recombee::for(1)->cart()->get();
+    $results = Recombee::user(1)->cart()->get();
 
     expect($results instanceof InteractionCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($interactions);
@@ -68,7 +67,7 @@ it('can list all the ever-made cart additions of a given item', function () {
         ->with(Matchers::equalTo(new ListItemCartAdditions("509")))
         ->andReturn($interactions);
 
-    $results = Recombee::for(new Item(['id' => 509]))->cart()->get();
+    $results = Recombee::item(509)->cart()->get();
 
     expect($results instanceof InteractionCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($interactions);
