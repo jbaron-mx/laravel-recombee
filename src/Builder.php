@@ -207,6 +207,27 @@ class Builder
         return $this;
     }
 
+    public function viewPortions(): self
+    {
+        $this->action = $this->initiator->isUser()
+            ? ['get' => \Baron\Recombee\Actions\Interactions\PortionViews\ListUserViewPortions::class]
+            : ['get' => \Baron\Recombee\Actions\Interactions\PortionViews\ListItemViewPortions::class];
+
+        return $this;
+    }
+
+    public function viewedPortion(Model|string $item, ?float $portion = null): self
+    {
+        $this->target = new Entity($item);
+        $this->param('portion', $portion);
+        $this->action = [
+            'post' => \Baron\Recombee\Actions\Interactions\PortionViews\SetViewPortion::class,
+            'delete' => \Baron\Recombee\Actions\Interactions\PortionViews\DeleteViewPortion::class,
+        ];
+
+        return $this;
+    }
+
     public function get()
     {
         return $this->performAction('get');
