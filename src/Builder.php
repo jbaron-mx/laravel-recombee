@@ -61,6 +61,15 @@ class Builder
         return $this;
     }
 
+    public function properties(): self
+    {
+        $this->action = $this->getInitiator()->isUser()
+            ? ['get' => \Baron\Recombee\Actions\Users\ListUserProperties::class]
+            : ['get' => \Baron\Recombee\Actions\Items\ListItemProperties::class];
+
+        return $this;
+    }
+
     public function users(): self
     {
         $this->action = ['get' => \Baron\Recombee\Actions\Users\ListUsers::class];

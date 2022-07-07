@@ -1,11 +1,13 @@
 <?php
 
+use Baron\Recombee\Collection\PropertyCollection;
 use Baron\Recombee\Facades\Recombee;
 use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddItemProperty;
 use Recombee\RecommApi\Requests\DeleteItem;
 use Recombee\RecommApi\Requests\GetItemPropertyInfo;
+use Recombee\RecommApi\Requests\ListItemProperties;
 use Recombee\RecommApi\Requests\SetItemValues;
 
 it('can create a plain item with no values', function () {
@@ -80,4 +82,22 @@ it('can retrieve an item property', function () {
     $results = Recombee::item()->property('active')->get();
 
     expect($results)->toEqual($prop);
+});
+
+it('can retrieve all item properties', function () {
+    $props = [
+        ['name' => 'name', 'type' => 'string'],
+        ['name' => 'active', 'type' => 'boolean'],
+    ];
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new ListItemProperties()))
+        ->andReturn($props);
+
+    $results = Recombee::item()->properties()->get();
+
+    expect($results instanceof PropertyCollection)->toBeTrue();
+    expect($results->collection->all())->toEqual($props);
 });

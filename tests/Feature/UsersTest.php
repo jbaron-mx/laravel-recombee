@@ -1,5 +1,6 @@
 <?php
 
+use Baron\Recombee\Collection\PropertyCollection;
 use Baron\Recombee\Collection\UserCollection;
 use Baron\Recombee\Facades\Recombee;
 use Hamcrest\Matchers;
@@ -7,6 +8,7 @@ use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddUserProperty;
 use Recombee\RecommApi\Requests\DeleteUser;
 use Recombee\RecommApi\Requests\GetUserPropertyInfo;
+use Recombee\RecommApi\Requests\ListUserProperties;
 use Recombee\RecommApi\Requests\ListUsers;
 use Recombee\RecommApi\Requests\SetUserValues;
 
@@ -102,4 +104,22 @@ it('can retrieve a user property', function () {
     $results = Recombee::user()->property('active')->get();
 
     expect($results)->toEqual($prop);
+});
+
+it('can retrieve all user properties', function () {
+    $props = [
+        ['name' => 'name', 'type' => 'string'],
+        ['name' => 'active', 'type' => 'boolean'],
+    ];
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new ListUserProperties()))
+        ->andReturn($props);
+
+    $results = Recombee::user()->properties()->get();
+
+    expect($results instanceof PropertyCollection)->toBeTrue();
+    expect($results->collection->all())->toEqual($props);
 });
