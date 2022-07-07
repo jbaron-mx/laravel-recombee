@@ -28,16 +28,35 @@ class Builder
         return $this->engine;
     }
 
-    public function user(Model|string $userId, array $values = []): self
+    public function user(Model|string $userId = null, array $values = []): self
     {
         $this->initiator = new Entity($userId, $values, Entity::USER);
 
         return $this;
     }
 
-    public function item(Model|string $itemId, array $values = []): self
+    public function item(Model|string $itemId = null, array $values = []): self
     {
         $this->initiator = new Entity($itemId, $values, Entity::ITEM);
+
+        return $this;
+    }
+
+    public function property(string $name, string $type = 'string')
+    {
+        $this->param('propertyName', $name);
+        $this->param('type', $type);
+        $this->action = $this->getInitiator()->isUser()
+            ?
+                [
+                    'get' => \Baron\Recombee\Actions\Users\GetUserPropertyInfo::class,
+                    'post' => \Baron\Recombee\Actions\Users\AddUserProperty::class,
+                ]
+            :
+                [
+                    'get' => \Baron\Recombee\Actions\Items\GetItemPropertyInfo::class,
+                    'post' => \Baron\Recombee\Actions\Items\AddItemProperty::class,
+                ];
 
         return $this;
     }

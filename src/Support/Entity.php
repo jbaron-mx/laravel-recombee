@@ -11,12 +11,12 @@ class Entity
     public const USER = 'User';
     public const ITEM = 'Item';
 
-    protected string $id;
+    protected ?string $id;
     protected string $key = 'id';
     protected string $type;
     protected array $values = [];
 
-    public function __construct(Model|string $entity, array $values = [], string $type = self::USER)
+    public function __construct(Model|string $entity = null, array $values = [], string $type = self::USER)
     {
         $userClass = config('recombee.user');
         $itemClass = config('recombee.item');
