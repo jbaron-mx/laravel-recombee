@@ -4,6 +4,7 @@ use Baron\Recombee\Collection\UserCollection;
 use Baron\Recombee\Facades\Recombee;
 use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
+use Recombee\RecommApi\Requests\DeleteUser;
 use Recombee\RecommApi\Requests\ListUsers;
 use Recombee\RecommApi\Requests\SetUserValues;
 
@@ -47,6 +48,18 @@ it('can create a plain user with some values', function () {
         ->andReturn('ok');
 
     $results = Recombee::user(1, ['name' => 'John Doe'])->recommendable();
+
+    expect($results)->toBeTrue();
+});
+
+it('can delete a user', function () {
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new DeleteUser('1')))
+        ->andReturn('ok');
+
+    $results = Recombee::user(1)->unrecommendable();
 
     expect($results)->toBeTrue();
 });

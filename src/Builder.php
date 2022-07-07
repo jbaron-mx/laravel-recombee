@@ -65,6 +65,15 @@ class Builder
         return $this->save();
     }
 
+    public function unrecommendable()
+    {
+        $this->action = $this->getInitiator()->isUser()
+            ? ['delete' => \Baron\Recombee\Actions\Users\DeleteUser::class]
+            : ['delete' => \Baron\Recombee\Actions\Items\DeleteItem::class];
+
+        return $this->delete();
+    }
+
     public function param(string $key, mixed $value = null): mixed
     {
         if (func_num_args() === 1) {
