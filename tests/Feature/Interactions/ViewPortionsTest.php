@@ -5,12 +5,8 @@ use Baron\Recombee\Facades\Recombee;
 use Baron\Recombee\Tests\Fixtures\Item;
 use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
-use Recombee\RecommApi\Requests\AddRating;
-use Recombee\RecommApi\Requests\DeleteRating;
 use Recombee\RecommApi\Requests\DeleteViewPortion;
-use Recombee\RecommApi\Requests\ListItemRatings;
 use Recombee\RecommApi\Requests\ListItemViewPortions;
-use Recombee\RecommApi\Requests\ListUserRatings;
 use Recombee\RecommApi\Requests\ListUserViewPortions;
 use Recombee\RecommApi\Requests\SetViewPortion;
 
