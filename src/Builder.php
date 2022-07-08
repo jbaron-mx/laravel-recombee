@@ -21,7 +21,7 @@ class Builder
     public function __construct(protected Engine $engine)
     {
         $this->options = [];
-        $this->params = ['count' => 25];
+        $this->params = [];
     }
 
     public function engine(): Engine
@@ -43,23 +43,13 @@ class Builder
         return $this;
     }
 
-    public function paginate($perPage = null, $pageName = 'page', $page = null)
-    {
-        $page = $page ?: Paginator::resolveCurrentPage($pageName);
-        $perPage = $perPage ?: 25;
-
-        $this->param('page', $page);
-        $this->option('count', $perPage);
-        $this->option('offset', ($page - 1) * $perPage);
-
-        return $this->performAction('get');
-    }
-
     public function item(Model|string $itemId = null, array $values = []): self
     {
         $this->initiator = new Entity($itemId, $values, Entity::ITEM);
         $this->action = [
-            'get' => \Baron\Recombee\Actions\Items\GetItemValues::class,
+            'get' => is_null($itemId)
+                ? \Baron\Recombee\Actions\Items\ListItems::class
+                : \Baron\Recombee\Actions\Items\GetItemValues::class,
             'post' => \Baron\Recombee\Actions\Items\AddItem::class,
             'delete' => \Baron\Recombee\Actions\Items\DeleteItem::class,
         ];
@@ -114,16 +104,6 @@ class Builder
         return $this->delete();
     }
 
-    public function recommendable()
-    {
-        return $this->save();
-    }
-
-    public function unrecommendable()
-    {
-        return $this->delete();
-    }
-
     public function param(string $key, mixed $value = null): mixed
     {
         if (func_num_args() === 1) {
@@ -146,12 +126,8 @@ class Builder
         return $this;
     }
 
-    public function limit(?int $limit = null): int|self
+    public function take(int $limit): self
     {
-        if (is_null($limit)) {
-            return $this->param('count');
-        }
-
         $this->param('count', $limit);
 
         return $this;
@@ -316,6 +292,28 @@ class Builder
     public function delete()
     {
         return $this->performAction('delete');
+    }
+
+    public function paginate($perPage = null, $pageName = 'page', $page = null)
+    {
+        $page = $page ?: Paginator::resolveCurrentPage($pageName);
+        $perPage = $perPage ?: 25;
+
+        $this->param('page', $page);
+        $this->option('count', $perPage);
+        $this->option('offset', ($page - 1) * $perPage);
+
+        return $this->performAction('get');
+    }
+
+    public function recommendable()
+    {
+        return $this->save();
+    }
+
+    public function unrecommendable()
+    {
+        return $this->delete();
     }
 
     public function getInitiator(): Entity

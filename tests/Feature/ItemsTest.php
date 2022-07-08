@@ -1,8 +1,10 @@
 <?php
 
+use Baron\Recombee\Collection\ItemCollection;
 use Baron\Recombee\Collection\PropertyCollection;
 use Baron\Recombee\Facades\Recombee;
 use Hamcrest\Matchers;
+use Illuminate\Pagination\Paginator;
 use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddItemProperty;
 use Recombee\RecommApi\Requests\Batch;
@@ -11,6 +13,7 @@ use Recombee\RecommApi\Requests\DeleteItemProperty;
 use Recombee\RecommApi\Requests\GetItemPropertyInfo;
 use Recombee\RecommApi\Requests\GetItemValues;
 use Recombee\RecommApi\Requests\ListItemProperties;
+use Recombee\RecommApi\Requests\ListItems;
 use Recombee\RecommApi\Requests\SetItemValues;
 
 it('can retrieve a single item', function () {
@@ -25,6 +28,45 @@ it('can retrieve a single item', function () {
     $results = Recombee::item(1)->get();
 
     expect($results)->toEqual($prop);
+});
+
+it('can list all items', function () {
+    $items = [
+        ['name' => 'HD Monitor', 'itemId' => '1'],
+        ['name' => 'Power Bank', 'itemId' => '2'],
+    ];
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new ListItems(['returnProperties' => true])))
+        ->andReturn($items);
+
+    $results = Recombee::item()->get();
+
+    expect($results instanceof ItemCollection)->toBeTrue();
+    expect($results->collection->all())->toEqual($items);
+});
+
+it('can paginate items', function () {
+    $items = [
+        ['name' => 'HD Monitor', 'itemId' => '1'],
+        ['name' => 'Power Bank', 'itemId' => '2'],
+    ];
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new ListItems([
+            'returnProperties' => true,
+            'count' => 2,
+        ])))
+        ->andReturn($items);
+
+    $results = Recombee::item()->paginate(2);
+
+    expect($results instanceof Paginator)->toBeTrue();
+    expect($results->items())->toEqual($items);
 });
 
 it('can create a plain item with no values', function () {

@@ -23,7 +23,7 @@ class RecommendItemsToUser
         return $this->map(
             $this->builder->engine()->client()->send(new ApiRequest(
                 $this->builder->getInitiator()->getId(),
-                $this->builder->limit(),
+                $this->builder->param('count'),
                 $this->builder->prepareOptions($this->defaultOptions)
             ))
         );

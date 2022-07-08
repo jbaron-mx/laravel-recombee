@@ -16,7 +16,7 @@ it('can recommend items to user', function () {
     $this->mock(Client::class)
         ->shouldReceive('send')
         ->once()
-        ->with(Matchers::equalTo(new RecommendItemsToUser("1", 25, ['returnProperties' => true])))
+        ->with(Matchers::equalTo(new RecommendItemsToUser("1", null, ['returnProperties' => true])))
         ->andReturn(['recomms' => $items]);
 
     $results = Recombee::user(1)->recommendItems()->get();
@@ -34,7 +34,7 @@ it('can recommend items to item', function () {
     $this->mock(Client::class)
         ->shouldReceive('send')
         ->once()
-        ->with(Matchers::equalTo(new RecommendItemsToItem("509", null, 25, ['returnProperties' => true])))
+        ->with(Matchers::equalTo(new RecommendItemsToItem("509", null, null, ['returnProperties' => true])))
         ->andReturn(['recomms' => $items]);
 
     $results = Recombee::item(509)->recommendItems()->get();

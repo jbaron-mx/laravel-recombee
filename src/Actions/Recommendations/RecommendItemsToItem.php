@@ -24,7 +24,7 @@ class RecommendItemsToItem
             $this->builder->engine()->client()->send(new ApiRequest(
                 $this->builder->getInitiator()->getId(),
                 $this->builder->param('targetUserId'),
-                $this->builder->limit(),
+                $this->builder->param('count'),
                 $this->builder->prepareOptions($this->defaultOptions)
             ))
         );

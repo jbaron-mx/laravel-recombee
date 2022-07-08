@@ -1,14 +1,14 @@
 <?php
 
-namespace Baron\Recombee\Actions\Users;
+namespace Baron\Recombee\Actions\Items;
 
 use Baron\Recombee\Builder;
-use Baron\Recombee\Collection\UserCollection;
+use Baron\Recombee\Collection\ItemCollection;
 use Illuminate\Container\Container;
 use Illuminate\Pagination\Paginator;
-use Recombee\RecommApi\Requests\ListUsers as ApiRequest;
+use Recombee\RecommApi\Requests\ListItems as ApiRequest;
 
-class ListUsers
+class ListItems
 {
     protected array $defaultOptions = [
         'returnProperties' => true,
@@ -54,8 +54,8 @@ class ListUsers
         ));
     }
 
-    protected function map($results): UserCollection
+    protected function map($results): ItemCollection
     {
-        return new UserCollection($results);
+        return new ItemCollection($results);
     }
 }

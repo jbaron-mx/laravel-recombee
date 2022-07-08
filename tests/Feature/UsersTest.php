@@ -30,7 +30,7 @@ it('can retrieve a single user', function () {
     expect($results)->toEqual($prop);
 });
 
-it('can list users', function () {
+it('can list all users', function () {
     $users = [
         ['name' => 'John Doe', 'userId' => '1'],
         ['name' => 'Frank Doe', 'userId' => '2'],

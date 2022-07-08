@@ -38,8 +38,8 @@ it('can define a target user', function () {
 });
 
 it('can define a query limit', function () {
-    $builder = Recombee::limit(50);
-    expect($builder->limit())->toBe(50);
+    $builder = Recombee::take(50);
+    expect($builder->param('count'))->toBe(50);
 });
 
 it('wont return any additional properties', function () {
