@@ -69,11 +69,13 @@ class Builder
                 [
                     'get' => \Baron\Recombee\Actions\Users\ListUserProperties::class,
                     'post' => \Baron\Recombee\Actions\Users\AddUserProperties::class,
+                    'delete' => \Baron\Recombee\Actions\Users\DeleteUserProperties::class,
                 ]
             :
                 [
                     'get' => \Baron\Recombee\Actions\Items\ListItemProperties::class,
                     'post' => \Baron\Recombee\Actions\Items\AddItemProperties::class,
+                    'delete' => \Baron\Recombee\Actions\Items\DeleteItemProperties::class,
                 ];
 
         return $this;

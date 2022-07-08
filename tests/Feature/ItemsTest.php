@@ -7,6 +7,7 @@ use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddItemProperty;
 use Recombee\RecommApi\Requests\Batch;
 use Recombee\RecommApi\Requests\DeleteItem;
+use Recombee\RecommApi\Requests\DeleteItemProperty;
 use Recombee\RecommApi\Requests\GetItemPropertyInfo;
 use Recombee\RecommApi\Requests\ListItemProperties;
 use Recombee\RecommApi\Requests\SetItemValues;
@@ -110,9 +111,9 @@ it('can create multiple item properties', function () {
         ->shouldReceive('send')
         ->once()
         ->with(Matchers::equalTo(new Batch([
-            'name' => new AddItemProperty('name', 'string'),
-            'color' => new AddItemProperty('color', 'string'),
-            'active' => new AddItemProperty('active', 'boolean'),
+            new AddItemProperty('name', 'string'),
+            new AddItemProperty('color', 'string'),
+            new AddItemProperty('active', 'boolean'),
         ])))
         ->andReturn([
             ['code' => 201, 'json' => 'ok'],
@@ -121,6 +122,28 @@ it('can create multiple item properties', function () {
         ]);
 
     $results = Recombee::item()->properties($props)->save();
+
+    expect($results)->toEqual(['success' => true, 'errors' => []]);
+});
+
+it('can delete multiple item properties', function () {
+    $props = ['name', 'color', 'active'];
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new Batch([
+            new DeleteItemProperty('name'),
+            new DeleteItemProperty('color'),
+            new DeleteItemProperty('active'),
+        ])))
+        ->andReturn([
+            ['code' => 201, 'json' => 'ok'],
+            ['code' => 201, 'json' => 'ok'],
+            ['code' => 201, 'json' => 'ok'],
+        ]);
+
+    $results = Recombee::item()->properties($props)->delete();
 
     expect($results)->toEqual(['success' => true, 'errors' => []]);
 });

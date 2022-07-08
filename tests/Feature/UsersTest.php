@@ -8,6 +8,7 @@ use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddUserProperty;
 use Recombee\RecommApi\Requests\Batch;
 use Recombee\RecommApi\Requests\DeleteUser;
+use Recombee\RecommApi\Requests\DeleteUserProperty;
 use Recombee\RecommApi\Requests\GetUserPropertyInfo;
 use Recombee\RecommApi\Requests\ListUserProperties;
 use Recombee\RecommApi\Requests\ListUsers;
@@ -132,9 +133,9 @@ it('can create multiple user properties', function () {
         ->shouldReceive('send')
         ->once()
         ->with(Matchers::equalTo(new Batch([
-            'name' => new AddUserProperty('name', 'string'),
-            'city' => new AddUserProperty('city', 'string'),
-            'active' => new AddUserProperty('active', 'boolean'),
+            new AddUserProperty('name', 'string'),
+            new AddUserProperty('city', 'string'),
+            new AddUserProperty('active', 'boolean'),
         ])))
         ->andReturn([
             ['code' => 201, 'json' => 'ok'],
@@ -143,6 +144,28 @@ it('can create multiple user properties', function () {
         ]);
 
     $results = Recombee::user()->properties($props)->save();
+
+    expect($results)->toEqual(['success' => true, 'errors' => []]);
+});
+
+it('can delete multiple user properties', function () {
+    $props = ['name', 'city', 'active'];
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new Batch([
+            new DeleteUserProperty('name', 'string'),
+            new DeleteUserProperty('city', 'string'),
+            new DeleteUserProperty('active', 'boolean'),
+        ])))
+        ->andReturn([
+            ['code' => 201, 'json' => 'ok'],
+            ['code' => 201, 'json' => 'ok'],
+            ['code' => 201, 'json' => 'ok'],
+        ]);
+
+    $results = Recombee::user()->properties($props)->delete();
 
     expect($results)->toEqual(['success' => true, 'errors' => []]);
 });

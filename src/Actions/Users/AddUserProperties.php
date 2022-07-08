@@ -23,7 +23,7 @@ class AddUserProperties
                     : [$key => $value]
             );
 
-        $reqs = $props->map(fn ($type, $name) => new ApiRequest($name, $type))->all();
+        $reqs = $props->map(fn ($type, $name) => new ApiRequest($name, $type))->values()->all();
 
         return $this->map($this->builder->engine()->client()->send(new Batch($reqs)));
     }

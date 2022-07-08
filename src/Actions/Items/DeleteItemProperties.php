@@ -4,10 +4,10 @@ namespace Baron\Recombee\Actions\Items;
 
 use Baron\Recombee\Builder;
 use Illuminate\Support\Arr;
-use Recombee\RecommApi\Requests\AddItemProperty as ApiRequest;
+use Recombee\RecommApi\Requests\DeleteItemProperty as ApiRequest;
 use Recombee\RecommApi\Requests\Batch;
 
-class AddItemProperties
+class DeleteItemProperties
 {
     public function __construct(protected Builder $builder)
     {
@@ -23,7 +23,7 @@ class AddItemProperties
                     : [$key => $value]
             );
 
-        $reqs = $props->map(fn ($type, $name) => new ApiRequest($name, $type))->values()->all();
+        $reqs = $props->map(fn ($type, $name) => new ApiRequest($name))->values()->all();
 
         return $this->map($this->builder->engine()->client()->send(new Batch($reqs)));
     }
