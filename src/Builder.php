@@ -6,6 +6,7 @@ namespace Baron\Recombee;
 
 use Baron\Recombee\Support\Entity;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
 
 class Builder
@@ -32,12 +33,26 @@ class Builder
     {
         $this->initiator = new Entity($userId, $values, Entity::USER);
         $this->action = [
-            'get' => \Baron\Recombee\Actions\Users\GetUserValues::class,
+            'get' => is_null($userId)
+                ? \Baron\Recombee\Actions\Users\ListUsers::class
+                : \Baron\Recombee\Actions\Users\GetUserValues::class,
             'post' => \Baron\Recombee\Actions\Users\AddUser::class,
             'delete' => \Baron\Recombee\Actions\Users\DeleteUser::class,
         ];
 
         return $this;
+    }
+
+    public function paginate($perPage = null, $pageName = 'page', $page = null)
+    {
+        $page = $page ?: Paginator::resolveCurrentPage($pageName);
+        $perPage = $perPage ?: 25;
+
+        $this->param('page', $page);
+        $this->option('count', $perPage);
+        $this->option('offset', ($page - 1) * $perPage);
+
+        return $this->performAction('get');
     }
 
     public function item(Model|string $itemId = null, array $values = []): self
@@ -88,13 +103,6 @@ class Builder
                     'post' => \Baron\Recombee\Actions\Items\AddItemProperties::class,
                     'delete' => \Baron\Recombee\Actions\Items\DeleteItemProperties::class,
                 ];
-
-        return $this;
-    }
-
-    public function users(): self
-    {
-        $this->action = ['get' => \Baron\Recombee\Actions\Users\ListUsers::class];
 
         return $this;
     }

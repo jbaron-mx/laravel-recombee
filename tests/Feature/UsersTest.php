@@ -4,6 +4,7 @@ use Baron\Recombee\Collection\PropertyCollection;
 use Baron\Recombee\Collection\UserCollection;
 use Baron\Recombee\Facades\Recombee;
 use Hamcrest\Matchers;
+use Illuminate\Pagination\Paginator;
 use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddUserProperty;
 use Recombee\RecommApi\Requests\Batch;
@@ -31,10 +32,8 @@ it('can retrieve a single user', function () {
 
 it('can list users', function () {
     $users = [
-        [
-            'name' => 'John Doe',
-            'userId' => '1',
-        ],
+        ['name' => 'John Doe', 'userId' => '1'],
+        ['name' => 'Frank Doe', 'userId' => '2'],
     ];
 
     $this->mock(Client::class)
@@ -43,10 +42,31 @@ it('can list users', function () {
         ->with(Matchers::equalTo(new ListUsers(['returnProperties' => true])))
         ->andReturn($users);
 
-    $results = Recombee::users()->get();
+    $results = Recombee::user()->get();
 
     expect($results instanceof UserCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($users);
+});
+
+it('can paginate users', function () {
+    $users = [
+        ['name' => 'John Doe', 'userId' => '1'],
+        ['name' => 'Frank Doe', 'userId' => '2'],
+    ];
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new ListUsers([
+            'returnProperties' => true,
+            'count' => 2,
+        ])))
+        ->andReturn($users);
+
+    $results = Recombee::user()->paginate(2);
+
+    expect($results instanceof Paginator)->toBeTrue();
+    expect($results->items())->toEqual($users);
 });
 
 it('can create a plain user with no values', function () {
