@@ -10,9 +10,24 @@ use Recombee\RecommApi\Requests\Batch;
 use Recombee\RecommApi\Requests\DeleteUser;
 use Recombee\RecommApi\Requests\DeleteUserProperty;
 use Recombee\RecommApi\Requests\GetUserPropertyInfo;
+use Recombee\RecommApi\Requests\GetUserValues;
 use Recombee\RecommApi\Requests\ListUserProperties;
 use Recombee\RecommApi\Requests\ListUsers;
 use Recombee\RecommApi\Requests\SetUserValues;
+
+it('can retrieve a single user', function () {
+    $prop = ['name' => 'John Doe', 'active' => true];
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new GetUserValues('1')))
+        ->andReturn($prop);
+
+    $results = Recombee::user(1)->get();
+
+    expect($results)->toEqual($prop);
+});
 
 it('can list users', function () {
     $users = [

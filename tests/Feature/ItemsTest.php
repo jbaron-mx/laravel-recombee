@@ -9,8 +9,23 @@ use Recombee\RecommApi\Requests\Batch;
 use Recombee\RecommApi\Requests\DeleteItem;
 use Recombee\RecommApi\Requests\DeleteItemProperty;
 use Recombee\RecommApi\Requests\GetItemPropertyInfo;
+use Recombee\RecommApi\Requests\GetItemValues;
 use Recombee\RecommApi\Requests\ListItemProperties;
 use Recombee\RecommApi\Requests\SetItemValues;
+
+it('can retrieve a single item', function () {
+    $prop = ['name' => 'HD Monitor', 'active' => true];
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new GetItemValues('1')))
+        ->andReturn($prop);
+
+    $results = Recombee::item(1)->get();
+
+    expect($results)->toEqual($prop);
+});
 
 it('can create a plain item with no values', function () {
     $this->mock(Client::class)

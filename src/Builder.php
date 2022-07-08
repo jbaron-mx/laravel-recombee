@@ -31,6 +31,11 @@ class Builder
     public function user(Model|string $userId = null, array $values = []): self
     {
         $this->initiator = new Entity($userId, $values, Entity::USER);
+        $this->action = [
+            'get' => \Baron\Recombee\Actions\Users\GetUserValues::class,
+            'post' => \Baron\Recombee\Actions\Users\AddUser::class,
+            'delete' => \Baron\Recombee\Actions\Users\DeleteUser::class,
+        ];
 
         return $this;
     }
@@ -38,6 +43,11 @@ class Builder
     public function item(Model|string $itemId = null, array $values = []): self
     {
         $this->initiator = new Entity($itemId, $values, Entity::ITEM);
+        $this->action = [
+            'get' => \Baron\Recombee\Actions\Items\GetItemValues::class,
+            'post' => \Baron\Recombee\Actions\Items\AddItem::class,
+            'delete' => \Baron\Recombee\Actions\Items\DeleteItem::class,
+        ];
 
         return $this;
     }
@@ -98,19 +108,11 @@ class Builder
 
     public function recommendable()
     {
-        $this->action = $this->getInitiator()->isUser()
-            ? ['post' => \Baron\Recombee\Actions\Users\AddUser::class]
-            : ['post' => \Baron\Recombee\Actions\Items\AddItem::class];
-
         return $this->save();
     }
 
     public function unrecommendable()
     {
-        $this->action = $this->getInitiator()->isUser()
-            ? ['delete' => \Baron\Recombee\Actions\Users\DeleteUser::class]
-            : ['delete' => \Baron\Recombee\Actions\Items\DeleteItem::class];
-
         return $this->delete();
     }
 
