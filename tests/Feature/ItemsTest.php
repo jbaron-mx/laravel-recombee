@@ -5,6 +5,7 @@ use Baron\Recombee\Facades\Recombee;
 use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddItemProperty;
+use Recombee\RecommApi\Requests\Batch;
 use Recombee\RecommApi\Requests\DeleteItem;
 use Recombee\RecommApi\Requests\GetItemPropertyInfo;
 use Recombee\RecommApi\Requests\ListItemProperties;
@@ -100,4 +101,26 @@ it('can retrieve all item properties', function () {
 
     expect($results instanceof PropertyCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($props);
+});
+
+it('can create multiple item properties', function () {
+    $props = ['name', 'color', 'active' => 'boolean'];
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new Batch([
+            'name' => new AddItemProperty('name', 'string'),
+            'color' => new AddItemProperty('color', 'string'),
+            'active' => new AddItemProperty('active', 'boolean'),
+        ])))
+        ->andReturn([
+            ['code' => 201, 'json' => 'ok'],
+            ['code' => 201, 'json' => 'ok'],
+            ['code' => 201, 'json' => 'ok'],
+        ]);
+
+    $results = Recombee::item()->properties($props)->save();
+
+    expect($results)->toEqual(['success' => true, 'errors' => []]);
 });

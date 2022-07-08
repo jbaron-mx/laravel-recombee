@@ -61,11 +61,20 @@ class Builder
         return $this;
     }
 
-    public function properties(): self
+    public function properties(array $properties = null): self
     {
+        $this->param('properties', $properties);
         $this->action = $this->getInitiator()->isUser()
-            ? ['get' => \Baron\Recombee\Actions\Users\ListUserProperties::class]
-            : ['get' => \Baron\Recombee\Actions\Items\ListItemProperties::class];
+            ?
+                [
+                    'get' => \Baron\Recombee\Actions\Users\ListUserProperties::class,
+                    'post' => \Baron\Recombee\Actions\Users\AddUserProperties::class,
+                ]
+            :
+                [
+                    'get' => \Baron\Recombee\Actions\Items\ListItemProperties::class,
+                    'post' => \Baron\Recombee\Actions\Items\AddItemProperties::class,
+                ];
 
         return $this;
     }

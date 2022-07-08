@@ -6,6 +6,7 @@ use Baron\Recombee\Facades\Recombee;
 use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddUserProperty;
+use Recombee\RecommApi\Requests\Batch;
 use Recombee\RecommApi\Requests\DeleteUser;
 use Recombee\RecommApi\Requests\GetUserPropertyInfo;
 use Recombee\RecommApi\Requests\ListUserProperties;
@@ -122,4 +123,26 @@ it('can retrieve all user properties', function () {
 
     expect($results instanceof PropertyCollection)->toBeTrue();
     expect($results->collection->all())->toEqual($props);
+});
+
+it('can create multiple user properties', function () {
+    $props = ['name', 'city', 'active' => 'boolean'];
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new Batch([
+            'name' => new AddUserProperty('name', 'string'),
+            'city' => new AddUserProperty('city', 'string'),
+            'active' => new AddUserProperty('active', 'boolean'),
+        ])))
+        ->andReturn([
+            ['code' => 201, 'json' => 'ok'],
+            ['code' => 201, 'json' => 'ok'],
+            ['code' => 201, 'json' => 'ok'],
+        ]);
+
+    $results = Recombee::user()->properties($props)->save();
+
+    expect($results)->toEqual(['success' => true, 'errors' => []]);
 });
