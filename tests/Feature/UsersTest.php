@@ -74,24 +74,28 @@ it('can create a user property with default type as string', function () {
     $this->mock(Client::class)
         ->shouldReceive('send')
         ->once()
-        ->with(Matchers::equalTo(new AddUserProperty('name', 'string')))
+        ->with(Matchers::equalTo(new Batch([
+            new AddUserProperty('name', 'string'),
+        ])))
         ->andReturn('ok');
 
     $results = Recombee::user()->property('name')->save();
 
-    expect($results)->toBeTrue();
+    expect($results)->toEqual(['success' => true, 'errors' => []]);
 });
 
 it('can create a user property with custom type', function () {
     $this->mock(Client::class)
         ->shouldReceive('send')
         ->once()
-        ->with(Matchers::equalTo(new AddUserProperty('active', 'boolean')))
+        ->with(Matchers::equalTo(new Batch([
+            new AddUserProperty('active', 'boolean'),
+        ])))
         ->andReturn('ok');
 
     $results = Recombee::user()->property('active', 'boolean')->save();
 
-    expect($results)->toBeTrue();
+    expect($results)->toEqual(['success' => true, 'errors' => []]);
 });
 
 it('can retrieve a user property', function () {

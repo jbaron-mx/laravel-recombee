@@ -52,24 +52,24 @@ it('can create an item property with default type as string', function () {
     $this->mock(Client::class)
         ->shouldReceive('send')
         ->once()
-        ->with(Matchers::equalTo(new AddItemProperty('color', 'string')))
+        ->with(Matchers::equalTo(new Batch([new AddItemProperty('color', 'string')])))
         ->andReturn('ok');
 
     $results = Recombee::item()->property('color')->save();
 
-    expect($results)->toBeTrue();
+    expect($results)->toEqual(['success' => true, 'errors' => []]);
 });
 
 it('can create an item property with custom type', function () {
     $this->mock(Client::class)
         ->shouldReceive('send')
         ->once()
-        ->with(Matchers::equalTo(new AddItemProperty('active', 'boolean')))
+        ->with(Matchers::equalTo(new Batch([new AddItemProperty('active', 'boolean')])))
         ->andReturn('ok');
 
     $results = Recombee::item()->property('active', 'boolean')->save();
 
-    expect($results)->toBeTrue();
+    expect($results)->toEqual(['success' => true, 'errors' => []]);
 });
 
 it('can retrieve an item property', function () {

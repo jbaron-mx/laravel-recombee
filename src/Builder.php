@@ -44,18 +44,19 @@ class Builder
 
     public function property(string $name, string $type = 'string')
     {
-        $this->param('propertyName', $name);
-        $this->param('type', $type);
+        $this->param('properties', [$name => $type]);
         $this->action = $this->getInitiator()->isUser()
             ?
                 [
                     'get' => \Baron\Recombee\Actions\Users\GetUserPropertyInfo::class,
-                    'post' => \Baron\Recombee\Actions\Users\AddUserProperty::class,
+                    'post' => \Baron\Recombee\Actions\Users\AddUserProperties::class,
+                    'delete' => \Baron\Recombee\Actions\Users\DeleteUserProperties::class,
                 ]
             :
                 [
                     'get' => \Baron\Recombee\Actions\Items\GetItemPropertyInfo::class,
-                    'post' => \Baron\Recombee\Actions\Items\AddItemProperty::class,
+                    'post' => \Baron\Recombee\Actions\Items\AddItemProperties::class,
+                    'delete' => \Baron\Recombee\Actions\Items\DeleteItemProperties::class,
                 ];
 
         return $this;

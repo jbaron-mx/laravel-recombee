@@ -4,8 +4,8 @@ namespace Baron\Recombee\Actions\Items;
 
 use Baron\Recombee\Builder;
 use Illuminate\Support\Arr;
-use Recombee\RecommApi\Requests\DeleteItemProperty as ApiRequest;
 use Recombee\RecommApi\Requests\Batch;
+use Recombee\RecommApi\Requests\DeleteItemProperty as ApiRequest;
 
 class DeleteItemProperties
 {

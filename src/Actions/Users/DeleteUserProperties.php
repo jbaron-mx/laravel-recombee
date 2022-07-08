@@ -4,8 +4,8 @@ namespace Baron\Recombee\Actions\Users;
 
 use Baron\Recombee\Builder;
 use Illuminate\Support\Arr;
-use Recombee\RecommApi\Requests\DeleteUserProperty as ApiRequest;
 use Recombee\RecommApi\Requests\Batch;
+use Recombee\RecommApi\Requests\DeleteUserProperty as ApiRequest;
 
 class DeleteUserProperties
 {

@@ -15,7 +15,7 @@ class GetItemPropertyInfo
     public function execute()
     {
         return $this->builder->engine()->client()->send(new ApiRequest(
-            $this->builder->param('propertyName')
+            array_key_first($this->builder->param('properties'))
         ));
     }
 }
