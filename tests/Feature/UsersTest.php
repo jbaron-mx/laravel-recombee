@@ -14,6 +14,7 @@ use Recombee\RecommApi\Requests\GetUserPropertyInfo;
 use Recombee\RecommApi\Requests\GetUserValues;
 use Recombee\RecommApi\Requests\ListUserProperties;
 use Recombee\RecommApi\Requests\ListUsers;
+use Recombee\RecommApi\Requests\MergeUsers;
 use Recombee\RecommApi\Requests\SetUserValues;
 
 it('can retrieve a single user', function () {
@@ -207,4 +208,19 @@ it('can delete multiple user properties', function () {
     $results = Recombee::user()->properties($props)->delete();
 
     expect($results)->toEqual(['success' => true, 'errors' => []]);
+});
+
+it('can merge users', function () {
+    $sourceUser = 'session-123423-user';
+    $targetUser = 1;
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new MergeUsers($targetUser, $sourceUser, [])))
+        ->andReturn('ok');
+
+    $results = Recombee::user($sourceUser)->mergeTo($targetUser)->save();
+
+    expect($results)->toBeTrue();
 });

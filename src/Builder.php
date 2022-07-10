@@ -328,6 +328,14 @@ class Builder
         return $this->delete();
     }
 
+    public function mergeTo(Model|string $item): self
+    {
+        $this->target = new Entity($item);
+        $this->action = ['post' => \Baron\Recombee\Actions\Users\MergeUsers::class];
+
+        return $this;
+    }
+
     public function getInitiator(): Entity
     {
         return $this->initiator;
