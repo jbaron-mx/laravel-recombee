@@ -2,23 +2,21 @@
 
 namespace Baron\Recombee\Actions\Interactions\Bookmarks;
 
-use Baron\Recombee\Builder;
+use Baron\Recombee\Actions\Action;
 use Baron\Recombee\Collection\InteractionCollection;
 use Recombee\RecommApi\Requests\ListUserBookmarks as ApiRequest;
 
-class ListUserBookmarks
+class ListUserBookmarks extends Action
 {
-    public function __construct(protected Builder $builder)
-    {
-        $this->builder = $builder;
-    }
-
     public function execute()
     {
-        return $this->map(
-            $this->builder->engine()->client()->send(new ApiRequest(
-                $this->builder->getInitiator()->getId()
-            ))
+        return $this->map($this->query());
+    }
+
+    protected function buildApiRequest()
+    {
+        return new ApiRequest(
+            $this->builder->getInitiator()->getId()
         );
     }
 

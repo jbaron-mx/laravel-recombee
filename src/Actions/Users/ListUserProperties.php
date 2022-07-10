@@ -1,27 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Baron\Recombee\Actions\Users;
 
-use Baron\Recombee\Builder;
+use Baron\Recombee\Actions\Action;
 use Baron\Recombee\Collection\PropertyCollection;
 use Recombee\RecommApi\Requests\ListUserProperties as ApiRequest;
 
-class ListUserProperties
+class ListUserProperties extends Action
 {
-    public function __construct(protected Builder $builder)
-    {
-        $this->builder = $builder;
-    }
-
     public function execute()
     {
-        return $this->map(
-            $this->builder->engine()->client()->send(new ApiRequest())
-        );
+        return new PropertyCollection($this->query());
     }
 
-    public function map($results): PropertyCollection
+    public function buildApiRequest()
     {
-        return new PropertyCollection($results);
+        return new ApiRequest();
     }
 }

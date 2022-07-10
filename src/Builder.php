@@ -148,8 +148,9 @@ class Builder
         return $this;
     }
 
-    public function recommendItems(): self
+    public function recommendItems(string $baseRecommendationId = null): self
     {
+        $this->param('baseRecommendationId', $baseRecommendationId);
         $this->action = $this->initiator->isUser()
             ? ['get' => \Baron\Recombee\Actions\Recommendations\RecommendItemsToUser::class]
             : ['get' => \Baron\Recombee\Actions\Recommendations\RecommendItemsToItem::class];
@@ -300,6 +301,7 @@ class Builder
         $perPage = $perPage ?: 25;
 
         $this->param('page', $page);
+        $this->param('pageName', $pageName);
         $this->option('count', $perPage);
         $this->option('offset', ($page - 1) * $perPage);
 

@@ -2,20 +2,18 @@
 
 namespace Baron\Recombee\Actions\Miscellaneous;
 
-use Baron\Recombee\Builder;
+use Baron\Recombee\Actions\Action;
 use Recombee\RecommApi\Requests\ResetDatabase as ApiRequest;
 
-class ResetDatabase
+class ResetDatabase extends Action
 {
-    public function __construct(protected Builder $builder)
-    {
-        $this->builder = $builder;
-    }
-
     public function execute()
     {
-        return $this->builder->engine()->client()->send(new ApiRequest()) === 'ok'
-            ? true
-            : false;
+        return $this->mapAsBoolean($this->query());
+    }
+
+    protected function buildApiRequest()
+    {
+        return new ApiRequest();
     }
 }

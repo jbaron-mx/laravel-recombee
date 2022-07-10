@@ -2,23 +2,23 @@
 
 namespace Baron\Recombee\Actions\Interactions\Ratings;
 
-use Baron\Recombee\Builder;
+use Baron\Recombee\Actions\Action;
 use Recombee\RecommApi\Requests\AddRating as ApiRequest;
 
-class AddRating
+class AddRating extends Action
 {
-    public function __construct(protected Builder $builder)
-    {
-        $this->builder = $builder;
-    }
-
     public function execute()
     {
-        return $this->builder->engine()->client()->send(new ApiRequest(
+        return $this->mapAsBoolean($this->query());
+    }
+
+    protected function buildApiRequest()
+    {
+        return new ApiRequest(
             $this->builder->getInitiator()->getId(),
             $this->builder->getTarget()->getId(),
             $this->builder->param('rating'),
             $this->builder->prepareOptions()
-        )) === 'ok' ? true : false;
+        );
     }
 }

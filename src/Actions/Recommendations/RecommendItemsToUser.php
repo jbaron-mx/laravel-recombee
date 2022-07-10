@@ -2,36 +2,17 @@
 
 namespace Baron\Recombee\Actions\Recommendations;
 
-use Baron\Recombee\Builder;
-use Baron\Recombee\Collection\RecommendationCollection;
-use Illuminate\Support\Arr;
+use Baron\Recombee\Actions\ListRecommendations;
 use Recombee\RecommApi\Requests\RecommendItemsToUser as ApiRequest;
 
-class RecommendItemsToUser
+class RecommendItemsToUser extends ListRecommendations
 {
-    protected array $defaultOptions = [
-        'returnProperties' => true,
-    ];
-
-    public function __construct(protected Builder $builder)
+    protected function generateRequest()
     {
-        $this->builder = $builder;
-    }
-
-    public function execute()
-    {
-        return $this->map(
-            $this->builder->engine()->client()->send(new ApiRequest(
-                $this->builder->getInitiator()->getId(),
-                $this->builder->param('count'),
-                $this->builder->prepareOptions($this->defaultOptions)
-            ))
+        return new ApiRequest(
+            $this->builder->getInitiator()->getId(),
+            $this->builder->param('count'),
+            $this->builder->prepareOptions($this->defaultOptions)
         );
-    }
-
-    public function map($results): RecommendationCollection
-    {
-        return (new RecommendationCollection(Arr::get($results, 'recomms')))
-            ->additional(['meta' => Arr::except($results, 'recomms')]);
     }
 }

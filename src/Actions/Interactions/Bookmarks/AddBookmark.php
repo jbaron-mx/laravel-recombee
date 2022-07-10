@@ -2,22 +2,22 @@
 
 namespace Baron\Recombee\Actions\Interactions\Bookmarks;
 
-use Baron\Recombee\Builder;
+use Baron\Recombee\Actions\Action;
 use Recombee\RecommApi\Requests\AddBookmark as ApiRequest;
 
-class AddBookmark
+class AddBookmark extends Action
 {
-    public function __construct(protected Builder $builder)
-    {
-        $this->builder = $builder;
-    }
-
     public function execute()
     {
-        return $this->builder->engine()->client()->send(new ApiRequest(
+        return $this->mapAsBoolean($this->query());
+    }
+
+    protected function buildApiRequest()
+    {
+        return new ApiRequest(
             $this->builder->getInitiator()->getId(),
             $this->builder->getTarget()->getId(),
             $this->builder->prepareOptions()
-        )) === 'ok' ? true : false;
+        );
     }
 }

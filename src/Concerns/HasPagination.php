@@ -10,12 +10,12 @@ trait HasPagination
     protected function paginate()
     {
         return Container::getInstance()->makeWith(Paginator::class, [
-            'items' => $this->rawRequest(),
+            'items' => $this->query(),
             'perPage' => $this->builder->option('count'),
             'currentPage' => $this->builder->param('page'),
             'options' => [
                 'path' => Paginator::resolveCurrentPath(),
-                'pageName' => 'page',
+                'pageName' => $this->builder->param('pageName'),
             ],
         ]);
     }
