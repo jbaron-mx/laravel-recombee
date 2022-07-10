@@ -158,6 +158,16 @@ class Builder
         return $this;
     }
 
+    public function recommendUsers(string $baseRecommendationId = null): self
+    {
+        $this->param('baseRecommendationId', $baseRecommendationId);
+        $this->action = $this->initiator->isUser()
+            ? ['get' => \Baron\Recombee\Actions\Recommendations\RecommendUsersToUser::class]
+            : ['get' => \Baron\Recombee\Actions\Recommendations\RecommendUsersToItem::class];
+
+        return $this;
+    }
+
     public function views(): self
     {
         $this->action = $this->initiator->isUser()
