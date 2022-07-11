@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Baron\Recombee;
 
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection as BaseCollection;
 
@@ -29,10 +30,10 @@ trait Recommendable
         });
     }
 
-    public static function makeRecommendable($models)
+    public static function makeRecommendable(Collection $models): array|null
     {
         if ($models->isEmpty()) {
-            return;
+            return null;
         }
 
         return $models->first()->recommendableEngine()->update($models);

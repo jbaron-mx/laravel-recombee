@@ -208,18 +208,16 @@ it('can delete multiple item properties', function () {
 });
 
 it('can index all item models', function () {
-    $items = Item::factory()->count(3)->create();
-    $items = $items->map(function ($model) {
-        return new SetItemValues(
-            $model->id,
-            Arr::except($model->toArray(), 'id'),
-            ['cascadeCreate' => true]
-        );
-    })->all();
-    $properties = collect(['name' => 'string', 'price' => 'double', 'active' => 'boolean']);
-    $properties = $properties->map(function ($type, $name) {
-        return new AddItemProperty($name, $type);
-    })->values()->all();
+    $models = Item::factory()->count(3)->create();
+    
+    $properties = [
+        new AddItemProperty('name', 'string'),
+        new AddItemProperty('price', 'double'),
+        new AddItemProperty('active', 'boolean'),
+    ];
+    $items = $models->map(fn ($model) =>
+        new SetItemValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+    )->all();
 
     $mock = $this->mock(Client::class);
 
@@ -227,21 +225,13 @@ it('can index all item models', function () {
         ->ordered()
         ->once()
         ->with(Matchers::equalTo(new Batch($properties)))
-        ->andReturn([
-            ['code' => 201, 'json' => 'ok'],
-            ['code' => 201, 'json' => 'ok'],
-            ['code' => 201, 'json' => 'ok'],
-        ]);
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
 
     $mock->shouldReceive('send')
         ->ordered()
         ->once()
         ->with(Matchers::equalTo(new Batch($items)))
-        ->andReturn([
-            ['code' => 201, 'json' => 'ok'],
-            ['code' => 201, 'json' => 'ok'],
-            ['code' => 201, 'json' => 'ok'],
-        ]);
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
 
     $response = Item::makeAllRecommendable();
 
@@ -252,17 +242,16 @@ it('can index all item models', function () {
 });
 
 it('can index a single item', function () {
-    $item = Item::factory()->create(['id' => 11]);
+    $model = Item::factory()->create(['id' => 11]);
+    
     $properties = [
         new AddItemProperty('name', 'string'),
         new AddItemProperty('price', 'double'),
         new AddItemProperty('active', 'boolean'),
     ];
-    $items = [new SetItemValues(
-        $item->id, 
-        ['name' => $item->name, 'price' => $item->price, 'active' => $item->active], 
-        ['cascadeCreate' => true]
-    )];
+    $items = [
+        new SetItemValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+    ];
 
     $mock = $this->mock(Client::class);
 
@@ -278,8 +267,42 @@ it('can index a single item', function () {
         ->with(Matchers::equalTo(new Batch($items)))
         ->andReturn([['code' => 201, 'json' => 'ok']]);
 
-    $response = $item->recommendable();
+    $response = $model->recommendable();
 
+    expect($response)->toBe([
+        'properties' => ['success' => true, 'errors' => []],
+        'items' => ['success' => true, 'errors' => []],
+    ]);
+});
+
+it('can index a custom set of items', function () {
+    $models = Item::factory()->count(3)->create();
+
+    $properties = [
+        new AddItemProperty('name', 'string'),
+        new AddItemProperty('price', 'double'),
+        new AddItemProperty('active', 'boolean'),
+    ];
+    $items = $models->map(fn ($model) =>
+        new SetItemValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+    )->all();
+
+    $mock = $this->mock(Client::class);
+
+    $mock->shouldReceive('send')
+        ->ordered()
+        ->once()
+        ->with(Matchers::equalTo(new Batch($properties)))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $mock->shouldReceive('send')
+        ->ordered()
+        ->once()
+        ->with(Matchers::equalTo(new Batch($items)))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $response = Item::makeRecommendable($models);
+    
     expect($response)->toBe([
         'properties' => ['success' => true, 'errors' => []],
         'items' => ['success' => true, 'errors' => []],

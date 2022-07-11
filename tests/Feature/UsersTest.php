@@ -230,17 +230,14 @@ it('can merge users', function () {
 
 it('can index all user models', function () {
     $users = User::factory()->count(3)->create();
-    $users = $users->map(function ($model) {
-        return new SetUserValues(
-            $model->id,
-            Arr::except($model->toArray(), 'id'),
-            ['cascadeCreate' => true]
-        );
-    })->all();
-    $properties = collect(['name' => 'string', 'active' => 'boolean']);
-    $properties = $properties->map(function ($type, $name) {
-        return new AddUserProperty($name, $type);
-    })->values()->all();
+    
+    $properties = [
+        new AddUserProperty('name', 'string'),
+        new AddUserProperty('active', 'boolean'),
+    ];
+    $users = $users->map(fn ($model) =>
+        new SetUserValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+    )->all();
 
     $mock = $this->mock(Client::class);
 
@@ -272,16 +269,14 @@ it('can index all user models', function () {
 });
 
 it('can index a single user', function () {
-    $user = User::factory()->create(['id' => 11]);
+    $model = User::factory()->create(['id' => 11]);
     $properties = [
         new AddUserProperty('name', 'string'),
         new AddUserProperty('active', 'boolean'),
     ];
-    $users = [new SetUserValues(
-        $user->id, 
-        ['name' => $user->name, 'active' => $user->active], 
-        ['cascadeCreate' => true]
-    )];
+    $users = [
+        new SetUserValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+    ];
 
     $mock = $this->mock(Client::class);
 
@@ -297,7 +292,40 @@ it('can index a single user', function () {
         ->with(Matchers::equalTo(new Batch($users)))
         ->andReturn([['code' => 201, 'json' => 'ok']]);
 
-    $response = $user->recommendable();
+    $response = $model->recommendable();
+
+    expect($response)->toBe([
+        'properties' => ['success' => true, 'errors' => []],
+        'users' => ['success' => true, 'errors' => []],
+    ]);
+});
+
+it('can index a custom set of users', function () {
+    $models = User::factory()->count(3)->create();
+
+    $properties = [
+        new AddUserProperty('name', 'string'),
+        new AddUserProperty('active', 'boolean'),
+    ];
+    $users = $models->map(fn ($model) =>
+        new SetUserValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+    )->all();
+
+    $mock = $this->mock(Client::class);
+
+    $mock->shouldReceive('send')
+        ->ordered()
+        ->once()
+        ->with(Matchers::equalTo(new Batch($properties)))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $mock->shouldReceive('send')
+        ->ordered()
+        ->once()
+        ->with(Matchers::equalTo(new Batch($users)))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $response = User::makeRecommendable($models);
 
     expect($response)->toBe([
         'properties' => ['success' => true, 'errors' => []],
