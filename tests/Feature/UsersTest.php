@@ -6,6 +6,7 @@ use Baron\Recombee\Facades\Recombee;
 use Baron\Recombee\Tests\Fixtures\User;
 use Hamcrest\Matchers;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Arr;
 use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddUserProperty;
 use Recombee\RecommApi\Requests\Batch;
@@ -224,4 +225,47 @@ it('can merge users', function () {
     $results = Recombee::user($sourceUser)->mergeTo($targetUser)->save();
 
     expect($results)->toBeTrue();
+});
+
+it('can index all user models', function () {
+    $users = User::factory()->count(3)->create();
+    $users = $users->map(function ($model) {
+        return new SetUserValues(
+            $model->id,
+            Arr::except($model->toArray(), 'id'),
+            ['cascadeCreate' => true]
+        );
+    })->all();
+    $properties = collect(['name' => 'string', 'active' => 'boolean']);
+    $properties = $properties->map(function ($type, $name) {
+        return new AddUserProperty($name, $type);
+    })->values()->all();
+
+    $mock = $this->mock(Client::class);
+
+    $mock->shouldReceive('send')
+        ->ordered()
+        ->once()
+        ->with(Matchers::equalTo(new Batch($properties)))
+        ->andReturn([
+            ['code' => 201, 'json' => 'ok'],
+            ['code' => 201, 'json' => 'ok'],
+        ]);
+
+    $mock->shouldReceive('send')
+        ->ordered()
+        ->once()
+        ->with(Matchers::equalTo(new Batch($users)))
+        ->andReturn([
+            ['code' => 201, 'json' => 'ok'],
+            ['code' => 201, 'json' => 'ok'],
+            ['code' => 201, 'json' => 'ok'],
+        ]);
+
+    $response = User::makeAllRecommendable();
+
+    expect($response)->toBe([
+        'properties' => ['success' => true, 'errors' => []],
+        'users' => ['success' => true, 'errors' => []],
+    ]);
 });
