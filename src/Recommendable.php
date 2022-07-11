@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Baron\Recombee;
 
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Collection as BaseCollection;
 
 trait Recommendable
 {
     public static function bootRecommendable()
     {
-        static::addGlobalScope(new RecommendableScope());
-
         (new static())->registerRecommendableMacros();
     }
 
@@ -39,7 +37,7 @@ trait Recommendable
         return $models->first()->recommendableEngine()->update($models);
     }
 
-    public static function makeAllRecommendable()
+    public static function makeAllRecommendable(): array|null
     {
         $self = new static();
 
@@ -48,10 +46,11 @@ trait Recommendable
                 $self->makeAllRecommendableUsing($query);
             })
             ->orderBy($self->getKeyName())
+            ->get()
             ->recommendable();
     }
 
-    public function recommendable()
+    public function recommendable(): array|null
     {
         return $this->newCollection([$this])->recommendable();
     }
@@ -66,7 +65,7 @@ trait Recommendable
         return [];
     }
 
-    protected function makeAllRecommendableUsing(Builder $query)
+    protected function makeAllRecommendableUsing(Builder $query): Builder
     {
         return $query;
     }

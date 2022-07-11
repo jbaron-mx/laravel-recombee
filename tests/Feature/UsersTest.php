@@ -8,7 +8,6 @@ use Hamcrest\Matchers;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
 use Recombee\RecommApi\Client;
-use Recombee\RecommApi\Requests\AddUser;
 use Recombee\RecommApi\Requests\AddUserProperty;
 use Recombee\RecommApi\Requests\Batch;
 use Recombee\RecommApi\Requests\DeleteUser;
@@ -230,13 +229,13 @@ it('can merge users', function () {
 
 it('can index all user models', function () {
     $users = User::factory()->count(3)->create();
-    
+
     $properties = [
         new AddUserProperty('name', 'string'),
         new AddUserProperty('active', 'boolean'),
     ];
-    $users = $users->map(fn ($model) =>
-        new SetUserValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+    $users = $users->map(
+        fn ($model) => new SetUserValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
     )->all();
 
     $mock = $this->mock(Client::class);
@@ -275,7 +274,7 @@ it('can index a single user', function () {
         new AddUserProperty('active', 'boolean'),
     ];
     $users = [
-        new SetUserValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+        new SetUserValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true]),
     ];
 
     $mock = $this->mock(Client::class);
@@ -307,8 +306,8 @@ it('can index a custom set of users', function () {
         new AddUserProperty('name', 'string'),
         new AddUserProperty('active', 'boolean'),
     ];
-    $users = $models->map(fn ($model) =>
-        new SetUserValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+    $users = $models->map(
+        fn ($model) => new SetUserValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
     )->all();
 
     $mock = $this->mock(Client::class);

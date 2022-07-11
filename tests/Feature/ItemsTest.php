@@ -209,14 +209,14 @@ it('can delete multiple item properties', function () {
 
 it('can index all item models', function () {
     $models = Item::factory()->count(3)->create();
-    
+
     $properties = [
         new AddItemProperty('name', 'string'),
         new AddItemProperty('price', 'double'),
         new AddItemProperty('active', 'boolean'),
     ];
-    $items = $models->map(fn ($model) =>
-        new SetItemValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+    $items = $models->map(
+        fn ($model) => new SetItemValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
     )->all();
 
     $mock = $this->mock(Client::class);
@@ -243,14 +243,14 @@ it('can index all item models', function () {
 
 it('can index a single item', function () {
     $model = Item::factory()->create(['id' => 11]);
-    
+
     $properties = [
         new AddItemProperty('name', 'string'),
         new AddItemProperty('price', 'double'),
         new AddItemProperty('active', 'boolean'),
     ];
     $items = [
-        new SetItemValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+        new SetItemValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true]),
     ];
 
     $mock = $this->mock(Client::class);
@@ -283,8 +283,8 @@ it('can index a custom set of items', function () {
         new AddItemProperty('price', 'double'),
         new AddItemProperty('active', 'boolean'),
     ];
-    $items = $models->map(fn ($model) =>
-        new SetItemValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
+    $items = $models->map(
+        fn ($model) => new SetItemValues($model->id, Arr::except($model->toArray(), 'id'), ['cascadeCreate' => true])
     )->all();
 
     $mock = $this->mock(Client::class);
@@ -302,7 +302,7 @@ it('can index a custom set of items', function () {
         ->andReturn([['code' => 201, 'json' => 'ok']]);
 
     $response = Item::makeRecommendable($models);
-    
+
     expect($response)->toBe([
         'properties' => ['success' => true, 'errors' => []],
         'items' => ['success' => true, 'errors' => []],
