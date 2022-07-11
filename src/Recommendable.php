@@ -24,7 +24,7 @@ trait Recommendable
         });
 
         BaseCollection::macro('unrecommendable', function () use ($self) {
-            $self->removeFromRecommendable($this);
+            return $self->removeFromRecommendable($this);
         });
     }
 
@@ -35,6 +35,15 @@ trait Recommendable
         }
 
         return $models->first()->recommendableEngine()->update($models);
+    }
+
+    public static function removeFromRecommendable(Collection $models): array|null
+    {
+        if ($models->isEmpty()) {
+            return null;
+        }
+
+        return $models->first()->recommendableEngine()->delete($models);
     }
 
     public static function makeAllRecommendable(): array|null
@@ -53,6 +62,11 @@ trait Recommendable
     public function recommendable(): array|null
     {
         return $this->newCollection([$this])->recommendable();
+    }
+
+    public function unrecommendable(): array|null
+    {
+        return $this->newCollection([$this])->unrecommendable();
     }
 
     public function toRecommendableArray(): array

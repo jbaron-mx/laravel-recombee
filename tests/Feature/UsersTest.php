@@ -331,3 +331,38 @@ it('can index a custom set of users', function () {
         'users' => ['success' => true, 'errors' => []],
     ]);
 });
+
+it('can remove a collection of users using model', function () {
+    $models = User::factory()->count(5)->create();
+    $users = $models->map(fn ($model) => new DeleteUser($model->id))->all();
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new Batch($users)))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $response = User::all()->unrecommendable();
+
+    expect($response)->toBe([
+        'success' => true,
+        'errors' => [],
+    ]);
+});
+
+it('can remove a single user using model', function () {
+    $models = User::factory()->count(5)->create();
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new Batch([new DeleteUser($models->first()->id)])))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $response = User::first()->unrecommendable();
+
+    expect($response)->toBe([
+        'success' => true,
+        'errors' => [],
+    ]);
+});

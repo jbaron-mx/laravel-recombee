@@ -308,3 +308,38 @@ it('can index a custom set of items', function () {
         'items' => ['success' => true, 'errors' => []],
     ]);
 });
+
+it('can remove a collection of items using model', function () {
+    $models = Item::factory()->count(5)->create();
+    $items = $models->map(fn ($model) => new DeleteItem($model->id))->all();
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new Batch($items)))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $response = Item::all()->unrecommendable();
+
+    expect($response)->toBe([
+        'success' => true,
+        'errors' => [],
+    ]);
+});
+
+it('can remove a single item using model', function () {
+    $models = Item::factory()->count(5)->create();
+
+    $this->mock(Client::class)
+        ->shouldReceive('send')
+        ->once()
+        ->with(Matchers::equalTo(new Batch([new DeleteItem($models->first()->id)])))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $response = Item::first()->unrecommendable();
+
+    expect($response)->toBe([
+        'success' => true,
+        'errors' => [],
+    ]);
+});

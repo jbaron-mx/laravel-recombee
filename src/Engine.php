@@ -23,32 +23,43 @@ class Engine
 
     public function update(Collection $models)
     {
-        $response = [];
-
         if ($models->isEmpty()) {
-            return;
+            return null;
         }
 
-        $entity = new Entity($models->first());
-        $type = $entity->getType();
+        $entityType = (new Entity($models->first()))->getType();
         $recommendableData = $this->prepareRecommendableData($models);
         $recommendableProperties = $this->prepareRecommendableProperties($models, $recommendableData->first());
 
         if ($recommendableProperties->isNotEmpty()) {
             $response['properties'] = app()->make(Builder::class)
-                ->$type()
+                ->$entityType()
                 ->properties($recommendableProperties->all())
                 ->save();
         }
 
         if ($recommendableData->isNotEmpty()) {
-            $response[Str::plural($type)] = app()->make(Builder::class)
-                ->$type()
+            $response[Str::plural($entityType)] = app()->make(Builder::class)
+                ->$entityType()
                 ->batch($recommendableData->all())
                 ->save();
         }
 
-        return $response;
+        return $response ?? null;
+    }
+
+    public function delete(Collection $models)
+    {
+        if ($models->isEmpty()) {
+            return null;
+        }
+
+        $entityType = (new Entity($models->first()))->getType();
+
+        return app()->make(Builder::class)
+            ->$entityType()
+            ->batch($models->all())
+            ->delete();
     }
 
     protected function prepareRecommendableData(Collection $models): Collection

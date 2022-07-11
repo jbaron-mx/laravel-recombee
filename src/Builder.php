@@ -101,8 +101,16 @@ class Builder
     {
         $this->param('entities', $entities);
         $this->action = $this->getInitiator()->isUser()
-            ? ['post' => \Baron\Recombee\Actions\Users\AddUserBatch::class]
-            : ['post' => \Baron\Recombee\Actions\Items\AddItemBatch::class];
+            ?
+                [
+                    'post' => \Baron\Recombee\Actions\Users\AddUserBatch::class,
+                    'delete' => \Baron\Recombee\Actions\Users\DeleteUserBatch::class,
+                ]
+            :
+                [
+                    'post' => \Baron\Recombee\Actions\Items\AddItemBatch::class,
+                    'delete' => \Baron\Recombee\Actions\Items\DeleteItemBatch::class,
+                ];
 
         return $this;
     }
