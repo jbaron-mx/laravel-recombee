@@ -4,6 +4,7 @@ namespace Baron\Recombee;
 
 use Baron\Recombee\Support\Entity;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Recombee\RecommApi\Client;
 
 class Engine
@@ -41,7 +42,7 @@ class Engine
         }
 
         if ($recommendableData->isNotEmpty()) {
-            $response[$type . 's'] = app()->make(Builder::class)
+            $response[Str::plural($type)] = app()->make(Builder::class)
                 ->$type()
                 ->batch($recommendableData->all())
                 ->save();
