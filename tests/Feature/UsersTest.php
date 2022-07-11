@@ -3,6 +3,7 @@
 use Baron\Recombee\Collection\PropertyCollection;
 use Baron\Recombee\Collection\UserCollection;
 use Baron\Recombee\Facades\Recombee;
+use Baron\Recombee\Tests\Fixtures\User;
 use Hamcrest\Matchers;
 use Illuminate\Pagination\Paginator;
 use Recombee\RecommApi\Client;

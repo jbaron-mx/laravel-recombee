@@ -97,6 +97,16 @@ class Builder
         return $this;
     }
 
+    public function batch(array $entities): self
+    {
+        $this->param('entities', $entities);
+        $this->action = $this->getInitiator()->isUser()
+            ? ['post' => \Baron\Recombee\Actions\Users\AddUserBatch::class]
+            : ['post' => \Baron\Recombee\Actions\Items\AddItemBatch::class];
+
+        return $this;
+    }
+
     public function reset()
     {
         $this->action = ['delete' => \Baron\Recombee\Actions\Miscellaneous\ResetDatabase::class];

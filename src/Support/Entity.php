@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Entity
 {
-    public const USER = 'User';
-    public const ITEM = 'Item';
+    public const USER = 'user';
+    public const ITEM = 'item';
 
     protected ?string $id;
     protected string $key = 'id';
@@ -45,7 +45,7 @@ class Entity
         return $this->key;
     }
 
-    public function getEntityKeyName()
+    public function getType()
     {
         return $this->type;
     }

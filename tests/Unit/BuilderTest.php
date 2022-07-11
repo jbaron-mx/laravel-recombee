@@ -8,28 +8,28 @@ it('can set initiator as user from a user model', function () {
     $builder = Recombee::user(new User(['id' => 9]));
     expect($builder->getInitiator() instanceof Entity)->toBeTrue();
     expect($builder->getInitiator()->getId())->toBe('9');
-    expect($builder->getInitiator()->getEntityKeyName())->toBe(Entity::USER);
+    expect($builder->getInitiator()->getType())->toBe(Entity::USER);
 });
 
 it('can set initiator as user from a string', function () {
     $builder = Recombee::user('17');
     expect($builder->getInitiator() instanceof Entity)->toBeTrue();
     expect($builder->getInitiator()->getId())->toBe('17');
-    expect($builder->getInitiator()->getEntityKeyName())->toBe(Entity::USER);
+    expect($builder->getInitiator()->getType())->toBe(Entity::USER);
 });
 
 it('can set initiator as item from a item model', function () {
     $builder = Recombee::item(509);
     expect($builder->getInitiator() instanceof Entity)->toBeTrue();
     expect($builder->getInitiator()->getId())->toBe('509');
-    expect($builder->getInitiator()->getEntityKeyName())->toBe(Entity::ITEM);
+    expect($builder->getInitiator()->getType())->toBe(Entity::ITEM);
 });
 
 it('can set initiator as item from a string', function () {
     $builder = Recombee::item('17');
     expect($builder->getInitiator() instanceof Entity)->toBeTrue();
     expect($builder->getInitiator()->getId())->toBe('17');
-    expect($builder->getInitiator()->getEntityKeyName())->toBe(Entity::ITEM);
+    expect($builder->getInitiator()->getType())->toBe(Entity::ITEM);
 });
 
 it('can define a target user', function () {
