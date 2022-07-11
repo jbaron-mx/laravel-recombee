@@ -250,3 +250,38 @@ it('can index all item models', function () {
         'items' => ['success' => true, 'errors' => []],
     ]);
 });
+
+it('can index a single item', function () {
+    $item = Item::factory()->create(['id' => 11]);
+    $properties = [
+        new AddItemProperty('name', 'string'),
+        new AddItemProperty('price', 'double'),
+        new AddItemProperty('active', 'boolean'),
+    ];
+    $items = [new SetItemValues(
+        $item->id, 
+        ['name' => $item->name, 'price' => $item->price, 'active' => $item->active], 
+        ['cascadeCreate' => true]
+    )];
+
+    $mock = $this->mock(Client::class);
+
+    $mock->shouldReceive('send')
+        ->ordered()
+        ->once()
+        ->with(Matchers::equalTo(new Batch($properties)))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $mock->shouldReceive('send')
+        ->ordered()
+        ->once()
+        ->with(Matchers::equalTo(new Batch($items)))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $response = $item->recommendable();
+
+    expect($response)->toBe([
+        'properties' => ['success' => true, 'errors' => []],
+        'items' => ['success' => true, 'errors' => []],
+    ]);
+});

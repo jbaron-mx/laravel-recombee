@@ -8,6 +8,7 @@ use Hamcrest\Matchers;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
 use Recombee\RecommApi\Client;
+use Recombee\RecommApi\Requests\AddUser;
 use Recombee\RecommApi\Requests\AddUserProperty;
 use Recombee\RecommApi\Requests\Batch;
 use Recombee\RecommApi\Requests\DeleteUser;
@@ -263,6 +264,40 @@ it('can index all user models', function () {
         ]);
 
     $response = User::makeAllRecommendable();
+
+    expect($response)->toBe([
+        'properties' => ['success' => true, 'errors' => []],
+        'users' => ['success' => true, 'errors' => []],
+    ]);
+});
+
+it('can index a single user', function () {
+    $user = User::factory()->create(['id' => 11]);
+    $properties = [
+        new AddUserProperty('name', 'string'),
+        new AddUserProperty('active', 'boolean'),
+    ];
+    $users = [new SetUserValues(
+        $user->id, 
+        ['name' => $user->name, 'active' => $user->active], 
+        ['cascadeCreate' => true]
+    )];
+
+    $mock = $this->mock(Client::class);
+
+    $mock->shouldReceive('send')
+        ->ordered()
+        ->once()
+        ->with(Matchers::equalTo(new Batch($properties)))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $mock->shouldReceive('send')
+        ->ordered()
+        ->once()
+        ->with(Matchers::equalTo(new Batch($users)))
+        ->andReturn([['code' => 201, 'json' => 'ok']]);
+
+    $response = $user->recommendable();
 
     expect($response)->toBe([
         'properties' => ['success' => true, 'errors' => []],

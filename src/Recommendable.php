@@ -52,7 +52,7 @@ trait Recommendable
 
     public function recommendable()
     {
-        $this->newCollection([$this])->recommendable();
+        return $this->newCollection([$this])->recommendable();
     }
 
     public function toRecommendableArray(): array
