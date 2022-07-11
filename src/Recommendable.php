@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Baron\Recombee;
 
+use Baron\Recombee\Builder as RecombeeBuilder;
+use Baron\Recombee\Support\Entity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Collection as BaseCollection;
@@ -34,7 +36,7 @@ trait Recommendable
             return null;
         }
 
-        return $models->first()->recommendableEngine()->update($models);
+        return $models->first()->recommendableBuilder()->engine()->update($models);
     }
 
     public static function removeFromRecommendable(Collection $models): array|null
@@ -43,7 +45,7 @@ trait Recommendable
             return null;
         }
 
-        return $models->first()->recommendableEngine()->delete($models);
+        return $models->first()->recommendableBuilder()->engine()->delete($models);
     }
 
     public static function makeAllRecommendable(): array|null
@@ -79,13 +81,32 @@ trait Recommendable
         return [];
     }
 
+    public function recommendItems(string $baseRecommendationId = null): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()
+            ->{$this->recommendableType()}($this)
+            ->recommendItems($baseRecommendationId);
+    }
+
+    public function recommendUsers(string $baseRecommendationId = null): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()
+            ->{$this->recommendableType()}($this)
+            ->recommendUsers($baseRecommendationId);
+    }
+
     protected function makeAllRecommendableUsing(Builder $query): Builder
     {
         return $query;
     }
 
-    protected function recommendableEngine(): Engine
+    protected function recommendableType(): string
     {
-        return app()->make(Engine::class);
+        return (new Entity($this))->getType();
+    }
+
+    protected function recommendableBuilder(): RecombeeBuilder
+    {
+        return app()->make(RecombeeBuilder::class);
     }
 }
