@@ -33,9 +33,9 @@ return [
     | Database's Region
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the region that the SDK Client will use to consume the
-    | service. You should adjust this to the region that is the closest to you
-    | to achieve minimal network latency during the API calls performed.
+    | Here you may configure the region that the SDK Client will use to consume
+    | the service. You should adjust this to the region that is the closest
+    | to you and achieve minimal network latency during the API calls.
     |
     */
     'region' => env('RECOMBEE_REGION', 'us-west'),
