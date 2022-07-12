@@ -2,6 +2,8 @@
 
 use Baron\Recombee\Collection\InteractionCollection;
 use Baron\Recombee\Facades\Recombee;
+use Baron\Recombee\Tests\Fixtures\Item;
+use Baron\Recombee\Tests\Fixtures\User;
 use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\AddDetailView;
@@ -9,28 +11,37 @@ use Recombee\RecommApi\Requests\DeleteDetailView;
 use Recombee\RecommApi\Requests\ListItemDetailViews;
 use Recombee\RecommApi\Requests\ListUserDetailViews;
 
-it('can add a detail view of a given item made by a given user', function () {
-    $this->mock(Client::class)
+beforeEach(function () {
+    User::factory()->create(['id' => 1]);
+    Item::factory()->create(['id' => 509]);
+
+    $this->m = $this->mock(Client::class)
         ->shouldReceive('send')
-        ->once()
-        ->with(Matchers::equalTo(new AddDetailView("2", "509")))
+        ->twice();
+});
+
+it('can add a detail view of a given item made by a given user', function () {
+    $this->m
+        ->with(Matchers::equalTo(new AddDetailView(1, 509)))
         ->andReturn('ok');
 
-    $results = Recombee::user(2)->viewed(509)->save();
+    $facadeResults = Recombee::user(1)->viewed(509)->save();
+    $modelResults = User::first()->viewed(509)->save();
 
-    expect($results)->toBeTrue();
+    expect($facadeResults)->toBeTrue();
+    expect($modelResults)->toBeTrue();
 });
 
 it('can delete all detail views of a given item made by a given user', function () {
-    $this->mock(Client::class)
-        ->shouldReceive('send')
-        ->once()
-        ->with(Matchers::equalTo(new DeleteDetailView("2", "509")))
+    $this->m
+        ->with(Matchers::equalTo(new DeleteDetailView(1, 509)))
         ->andReturn('ok');
 
-    $results = Recombee::user(2)->viewed(509)->delete();
+    $facadeResults = Recombee::user(1)->viewed(509)->delete();
+    $modelResults = User::first()->viewed(509)->delete();
 
-    expect($results)->toBeTrue();
+    expect($facadeResults)->toBeTrue();
+    expect($modelResults)->toBeTrue();
 });
 
 it('can list all detail views made by a given user', function () {
@@ -41,16 +52,18 @@ it('can list all detail views made by a given user', function () {
         'duration' => null,
     ]];
 
-    $this->mock(Client::class)
-        ->shouldReceive('send')
-        ->once()
-        ->with(Matchers::equalTo(new ListUserDetailViews("1")))
+    $this->m
+        ->with(Matchers::equalTo(new ListUserDetailViews(1)))
         ->andReturn($interactions);
 
-    $results = Recombee::user(1)->views()->get();
+    $facadeResults = Recombee::user(1)->views()->get();
+    $modelResults = User::first()->views()->get();
 
-    expect($results instanceof InteractionCollection)->toBeTrue();
-    expect($results->collection->all())->toEqual($interactions);
+    expect($facadeResults instanceof InteractionCollection)->toBeTrue();
+    expect($facadeResults->collection->all())->toEqual($interactions);
+
+    expect($modelResults instanceof InteractionCollection)->toBeTrue();
+    expect($modelResults->collection->all())->toEqual($interactions);
 });
 
 it('can list all the detail views of a given item ever made by different users', function () {
@@ -61,14 +74,16 @@ it('can list all the detail views of a given item ever made by different users',
         'duration' => null,
     ]];
 
-    $this->mock(Client::class)
-        ->shouldReceive('send')
-        ->once()
-        ->with(Matchers::equalTo(new ListItemDetailViews("509")))
+    $this->m
+        ->with(Matchers::equalTo(new ListItemDetailViews(509)))
         ->andReturn($interactions);
 
-    $results = Recombee::item(509)->views()->get();
+    $facadeResults = Recombee::item(509)->views()->get();
+    $modelResults = Item::first()->views()->get();
 
-    expect($results instanceof InteractionCollection)->toBeTrue();
-    expect($results->collection->all())->toEqual($interactions);
+    expect($facadeResults instanceof InteractionCollection)->toBeTrue();
+    expect($facadeResults->collection->all())->toEqual($interactions);
+
+    expect($modelResults instanceof InteractionCollection)->toBeTrue();
+    expect($modelResults->collection->all())->toEqual($interactions);
 });

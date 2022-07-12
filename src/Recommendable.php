@@ -7,6 +7,7 @@ namespace Baron\Recombee;
 use Baron\Recombee\Builder as RecombeeBuilder;
 use Baron\Recombee\Support\Entity;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Collection as BaseCollection;
 
@@ -83,16 +84,72 @@ trait Recommendable
 
     public function recommendItems(string $baseRecommendationId = null): RecombeeBuilder
     {
-        return $this->recommendableBuilder()
-            ->{$this->recommendableType()}($this)
-            ->recommendItems($baseRecommendationId);
+        return $this->recommendableBuilder()->recommendItems($baseRecommendationId);
     }
 
     public function recommendUsers(string $baseRecommendationId = null): RecombeeBuilder
     {
-        return $this->recommendableBuilder()
-            ->{$this->recommendableType()}($this)
-            ->recommendUsers($baseRecommendationId);
+        return $this->recommendableBuilder()->recommendUsers($baseRecommendationId);
+    }
+
+    public function views(): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->views();
+    }
+
+    public function viewed(Model|string $item): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->viewed($item);
+    }
+
+    public function purchases(): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->purchases();
+    }
+
+    public function purchased(Model|string $item): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->purchased($item);
+    }
+
+    public function ratings(): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->ratings();
+    }
+
+    public function rated(Model|string $item, ?float $rating = null): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->rated($item, $rating);
+    }
+
+    public function cart(): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->cart();
+    }
+
+    public function carted(Model|string $item): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->carted($item);
+    }
+
+    public function bookmarks(): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->bookmarks();
+    }
+
+    public function bookmarked(Model|string $item): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->bookmarked($item);
+    }
+
+    public function viewPortions(): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->viewPortions();
+    }
+
+    public function viewedPortion(Model|string $item, ?float $portion = null): RecombeeBuilder
+    {
+        return $this->recommendableBuilder()->viewedPortion($item, $portion);
     }
 
     protected function makeAllRecommendableUsing(Builder $query): Builder
@@ -107,6 +164,6 @@ trait Recommendable
 
     protected function recommendableBuilder(): RecombeeBuilder
     {
-        return app()->make(RecombeeBuilder::class);
+        return app()->make(RecombeeBuilder::class)->{$this->recommendableType()}($this);
     }
 }

@@ -2,6 +2,8 @@
 
 use Baron\Recombee\Collection\InteractionCollection;
 use Baron\Recombee\Facades\Recombee;
+use Baron\Recombee\Tests\Fixtures\Item;
+use Baron\Recombee\Tests\Fixtures\User;
 use Hamcrest\Matchers;
 use Recombee\RecommApi\Client;
 use Recombee\RecommApi\Requests\DeleteViewPortion;
@@ -9,28 +11,37 @@ use Recombee\RecommApi\Requests\ListItemViewPortions;
 use Recombee\RecommApi\Requests\ListUserViewPortions;
 use Recombee\RecommApi\Requests\SetViewPortion;
 
-it('can set a viewed portion of given item made by a given user', function () {
-    $this->mock(Client::class)
+beforeEach(function () {
+    User::factory()->create(['id' => 1]);
+    Item::factory()->create(['id' => 509]);
+
+    $this->m = $this->mock(Client::class)
         ->shouldReceive('send')
-        ->once()
-        ->with(Matchers::equalTo(new SetViewPortion("2", "509", 0.5)))
+        ->twice();
+});
+
+it('can set a viewed portion of given item made by a given user', function () {
+    $this->m
+        ->with(Matchers::equalTo(new SetViewPortion(1, 509, 0.5)))
         ->andReturn('ok');
 
-    $results = Recombee::user(2)->viewedPortion(509, 0.5)->save();
+    $facadeResults = Recombee::user(1)->viewedPortion(509, 0.5)->save();
+    $modelResults = User::first()->viewedPortion(509, 0.5)->save();
 
-    expect($results)->toBeTrue();
+    expect($facadeResults)->toBeTrue();
+    expect($modelResults)->toBeTrue();
 });
 
 it('can delete all viewed portions of a given item made by a given user', function () {
-    $this->mock(Client::class)
-        ->shouldReceive('send')
-        ->once()
-        ->with(Matchers::equalTo(new DeleteViewPortion("2", "509")))
+    $this->m
+        ->with(Matchers::equalTo(new DeleteViewPortion(1, 509)))
         ->andReturn('ok');
 
-    $results = Recombee::user(2)->viewedPortion(509)->delete();
+    $facadeResults = Recombee::user(1)->viewedPortion(509)->delete();
+    $modelResults = User::first()->viewedPortion(509)->delete();
 
-    expect($results)->toBeTrue();
+    expect($facadeResults)->toBeTrue();
+    expect($modelResults)->toBeTrue();
 });
 
 it('can list all the view portions ever submitted by a given user', function () {
@@ -41,16 +52,18 @@ it('can list all the view portions ever submitted by a given user', function () 
         'timestamp' => 1634971162,
     ]];
 
-    $this->mock(Client::class)
-        ->shouldReceive('send')
-        ->once()
-        ->with(Matchers::equalTo(new ListUserViewPortions("2")))
+    $this->m
+        ->with(Matchers::equalTo(new ListUserViewPortions(1)))
         ->andReturn($interactions);
 
-    $results = Recombee::user(2)->viewPortions()->get();
+    $facadeResults = Recombee::user(1)->viewPortions()->get();
+    $modelResults = User::first()->viewPortions()->get();
 
-    expect($results instanceof InteractionCollection)->toBeTrue();
-    expect($results->collection->all())->toEqual($interactions);
+    expect($facadeResults instanceof InteractionCollection)->toBeTrue();
+    expect($facadeResults->collection->all())->toEqual($interactions);
+
+    expect($modelResults instanceof InteractionCollection)->toBeTrue();
+    expect($modelResults->collection->all())->toEqual($interactions);
 });
 
 it('can list all the view portions of an item ever submitted by different users', function () {
@@ -61,14 +74,16 @@ it('can list all the view portions of an item ever submitted by different users'
         'timestamp' => 1634971162,
     ]];
 
-    $this->mock(Client::class)
-        ->shouldReceive('send')
-        ->once()
+    $this->m
         ->with(Matchers::equalTo(new ListItemViewPortions("509")))
         ->andReturn($interactions);
 
-    $results = Recombee::item(509)->viewPortions()->get();
+    $facadeResults = Recombee::item(509)->viewPortions()->get();
+    $modelResults = Item::first()->viewPortions()->get();
 
-    expect($results instanceof InteractionCollection)->toBeTrue();
-    expect($results->collection->all())->toEqual($interactions);
+    expect($facadeResults instanceof InteractionCollection)->toBeTrue();
+    expect($facadeResults->collection->all())->toEqual($interactions);
+
+    expect($modelResults instanceof InteractionCollection)->toBeTrue();
+    expect($modelResults->collection->all())->toEqual($interactions);
 });
