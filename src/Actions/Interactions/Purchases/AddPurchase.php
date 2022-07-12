@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Baron\Recombee\Actions\Interactions\Purchases;
 
 use Baron\Recombee\Actions\Action;

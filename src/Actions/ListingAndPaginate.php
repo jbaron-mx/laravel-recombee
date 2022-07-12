@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Baron\Recombee\Actions;
 
-use Baron\Recombee\Concerns\HasPagination;
+use Illuminate\Container\Container;
+use Illuminate\Pagination\Paginator;
 
 abstract class ListingAndPaginate extends Action
 {
-    use HasPagination;
-
     protected $apiRequest;
     protected $collection;
 
@@ -40,5 +39,18 @@ abstract class ListingAndPaginate extends Action
     protected function all()
     {
         return new ($this->collection)($this->query());
+    }
+
+    protected function paginate()
+    {
+        return Container::getInstance()->makeWith(Paginator::class, [
+            'items' => $this->query(),
+            'perPage' => $this->builder->option('count'),
+            'currentPage' => $this->builder->param('page'),
+            'options' => [
+                'path' => Paginator::resolveCurrentPath(),
+                'pageName' => $this->builder->param('pageName'),
+            ],
+        ]);
     }
 }

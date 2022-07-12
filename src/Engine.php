@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Baron\Recombee;
 
 use Baron\Recombee\Support\Entity;

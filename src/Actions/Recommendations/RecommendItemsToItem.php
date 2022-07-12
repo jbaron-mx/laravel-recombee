@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Baron\Recombee\Actions\Recommendations;
 
 use Baron\Recombee\Actions\ListRecommendations;
