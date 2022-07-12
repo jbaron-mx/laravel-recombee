@@ -1,22 +1,17 @@
+![](https://banners.beyondco.de/Laravel%20Recombee.png?theme=light&packageManager=composer+require&packageName=jbaron-mx%2Flaravel-recombee&pattern=architect&style=style_1&description=Integrate+AI-powered+recommendations+seamlessly&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg)
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/support-ukraine.svg?t=1" />](https://supportukrainenow.org)
+<p align="center">
+<a href="https://packagist.org/packages/jbaron-mx/laravel-recombee"><img src="https://img.shields.io/packagist/v/jbaron-mx/laravel-recombee.svg?style=flat-square" alt="Latest Stable Version"></a>
+<a href="https://github.com/jbaron-mx/laravel-recombee/actions?query=workflow%3Arun-tests+branch%3Amain"><img src="https://img.shields.io/github/workflow/status/jbaron-mx/laravel-recombee/run-tests?label=tests" alt="GitHub Tests Action Status"></a>
+<a href="https://github.com/jbaron-mx/laravel-recombee/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain"><img src="https://img.shields.io/github/workflow/status/jbaron-mx/laravel-recombee/Check%20&%20fix%20styling?label=code%20style" alt="GitHub Code Style Action Status"></a>
+<a href="https://packagist.org/packages/jbaron-mx/laravel-recombee"><img src="https://img.shields.io/packagist/dt/jbaron-mx/laravel-recombee.svg?style=flat-square" alt="Total Downloads"></a>
+</p>
 
-# An expressive fluent API wrapper around Recombee's SDK to use within Laravel applications
+------
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/jbaron-mx/laravel-recombee.svg?style=flat-square)](https://packagist.org/packages/jbaron-mx/laravel-recombee)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/jbaron-mx/laravel-recombee/run-tests?label=tests)](https://github.com/jbaron-mx/laravel-recombee/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/jbaron-mx/laravel-recombee/Check%20&%20fix%20styling?label=code%20style)](https://github.com/jbaron-mx/laravel-recombee/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/jbaron-mx/laravel-recombee.svg?style=flat-square)](https://packagist.org/packages/jbaron-mx/laravel-recombee)
+[Recombee](https://www.recombee.com/) is an **AI-powered recommendation engine** to deliver impactful user experiences with **recommendations based on users' behavior and interests**.
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-recombee.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-recombee)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+This package is a [Recombee's SDK](https://github.com/Recombee/php-api-client) wrapper for Laravel. It provides an **expressive fluent API** to seamlessly integrate **personalized recommendations to your users** in the *Laravel way*.
 
 ## Installation
 
@@ -26,37 +21,10 @@ You can install the package via composer:
 composer require jbaron-mx/laravel-recombee
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="laravel-recombee-migrations"
-php artisan migrate
-```
-
 You can publish the config file with:
 
 ```bash
 php artisan vendor:publish --tag="laravel-recombee-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="laravel-recombee-views"
-```
-
-## Usage
-
-```php
-$recombee = new Baron\Recombee();
-echo $recombee->echoPhrase('Hello, Baron!');
 ```
 
 ## Testing
