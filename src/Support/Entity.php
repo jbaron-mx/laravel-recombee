@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Baron\Recombee\Support;
 
 use Illuminate\Database\Eloquent\Model;
+use UnhandledMatchError;
 
 class Entity
 {
@@ -27,6 +28,7 @@ class Entity
             $this->type = match (true) {
                 $entity instanceof $userClass => self::USER,
                 $entity instanceof $itemClass => self::ITEM,
+                default => throw new UnhandledMatchError()
             };
         } else {
             $this->id = $entity;

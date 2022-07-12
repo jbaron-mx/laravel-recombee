@@ -36,13 +36,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Baron\\Recombee\\": "src",
-            "Baron\\Recombee\\Database\\Factories\\": "database/factories"
+            "Baron\\Recombee\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Baron\\Recombee\\Tests\\": "tests"
+            "Baron\\Recombee\\Tests\\": "tests",
+            "Baron\\Recombee\\Tests\\Database\\Factories\\": "tests/database/factories",
+            "Baron\\Recombee\\Tests\\Database\\Migrations\\": "tests/database/migrations"
         }
     },
     "scripts": {

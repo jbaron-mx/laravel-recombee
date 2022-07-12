@@ -29,7 +29,7 @@ class ImportCommand extends Command
      * Execute the console command.
      *
      * @param  \Illuminate\Contracts\Events\Dispatcher  $events
-     * @return void
+     * @return int
      */
     public function handle(Dispatcher $events)
     {
