@@ -162,7 +162,7 @@ trait Recommendable
         return (new Entity($this))->getType();
     }
 
-    protected function recommendableBuilder(): RecombeeBuilder
+    public function recommendableBuilder(): RecombeeBuilder
     {
         return app()->make(RecombeeBuilder::class)->{$this->recommendableType()}($this);
     }
