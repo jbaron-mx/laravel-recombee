@@ -2,11 +2,11 @@
 
 namespace Baron\Recombee\Tests;
 
-use Baron\Recombee\Tests\Fixtures\User;
 use Baron\Recombee\RecombeeServiceProvider;
 use Baron\Recombee\Tests\Fixtures\Item;
-use Orchestra\Testbench\TestCase as Orchestra;
+use Baron\Recombee\Tests\Fixtures\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {

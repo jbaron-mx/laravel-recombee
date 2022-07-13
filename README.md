@@ -9,7 +9,7 @@
 
 ------
 
-[Recombee](https://www.recombee.com/) is an **AI-powered recommendation engine** that delivers amazing user experiences with **recommendations based on users' behavior and interests**.
+[Recombee](https://www.recombee.com/) is an **AI-powered recommendation engine** that delivers amazing user experiences with recommendations based on users' behavior and interests.
 
 This package is a [Recombee PHP SDK](https://github.com/Recombee/php-api-client) wrapper for Laravel. It provides an **expressive fluent API** to seamlessly integrate **personalized recommendations** into your application in the *Laravel way*. Heavily inspired in [Laravel Scout](https://github.com/laravel/scout/).
 
