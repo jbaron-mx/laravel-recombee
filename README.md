@@ -98,8 +98,8 @@ use Baron\Recombee\Recommendable;
 
 class User extends Authenticatable
 {
-	use Recommendable;
-	...
+    use Recommendable;
+    ...
 ```
 
 ```php
@@ -107,8 +107,8 @@ use Baron\Recombee\Recommendable;
 
 class Item extends Model
 {
-	use Recommendable;
-	...
+    use Recommendable;
+    ...
 ```
 
 ### Configuring Recommendable Data
@@ -118,17 +118,17 @@ By default, the entire `toArray` form of a given model will be persisted to Reco
 ```php
 class User extends Authenticatable
 {
-	use Recommendable;
-	...
+    use Recommendable;
+    ...
 
-	public function toRecommendableArray()
-	{
-		return [
-			'name' => $this->name,
-			'age' => $this->age,
-			'active' => $this->active,
-		];
-	}
+    public function toRecommendableArray()
+    {
+        return [
+            'name' => $this->name,
+            'age' => $this->age,
+            'active' => $this->active,
+        ];
+    }
 ```
 
 Additionally, by default, all data properties will be persisted as string types to Recombee. If you would like to customize the types, you may override the `toRecommendableProperties` method on the model:
@@ -138,17 +138,17 @@ Additionally, by default, all data properties will be persisted as string types 
 ```php
 class User extends Authenticatable
 {
-	use Recommendable;
-	...
+    use Recommendable;
+    ...
 
-	public function toRecommendableProperties()
-	{
-		return [
-			'name' => 'string',
-			'age' => 'int'
-			'active' => 'boolean',
-		];
-	}
+    public function toRecommendableProperties()
+    {
+        return [
+            'name' => 'string',
+            'age' => 'int'
+            'active' => 'boolean',
+        ];
+    }
 ```
 
 ### Modifying the Import Query
@@ -160,13 +160,13 @@ use  Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
-	use Recommendable;
-	...
+    use Recommendable;
+    ...
 	
-	protected function makeAllRecommendableUsing(Builder $query)
-	{
-		return $query->with('country');
-	}
+    protected function makeAllRecommendableUsing(Builder $query)
+    {
+        return $query->with('country');
+    }
 ```
 
 ## Importing users/items
@@ -224,9 +224,9 @@ Recombee::user()->property('active', 'boolean')->save();
 
 // Creating multiple properties at once
 Recombee::item()->properties([
-	'description'			# String type by default
-	'price' => 'double',
-	'available' => 'boolean',
+    'description'       # String type by default
+    'price' => 'double',
+    'available' => 'boolean',
 ])->save();
 ```
 
@@ -240,8 +240,8 @@ Recombee::user()->property('name')->delete();
 
 // Deleting multiple properties at once
 Recombee::item()
-	->properties(['description', 'price', 'available'])
-	->delete();
+    ->properties(['description', 'price', 'available'])
+    ->delete();
 ```
 
 ## Adding/Updating Records
@@ -273,8 +273,8 @@ Recombee::user($model)->save();
 
 // Passing raw data
 Recombee::item(1, [
-	'description' => '4K Screen TV',
-	'price' => 209.99
+    'description' => '4K Screen TV',
+    'price' => 209.99
 ])->save();
 ```
 
