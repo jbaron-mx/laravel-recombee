@@ -2,8 +2,8 @@
 
 <p align="center">
 <a href="https://packagist.org/packages/jbaron-mx/laravel-recombee"><img src="https://img.shields.io/packagist/v/jbaron-mx/laravel-recombee.svg?style=flat-square" alt="Latest Stable Version"></a>
-<a href="https://github.com/jbaron-mx/laravel-recombee/actions?query=workflow%3Arun-tests+branch%3Amain"><img src="https://img.shields.io/github/workflow/status/jbaron-mx/laravel-recombee/run-tests?label=tests" alt="GitHub Tests Action Status"></a>
-<a href="https://github.com/jbaron-mx/laravel-recombee/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain"><img src="https://img.shields.io/github/workflow/status/jbaron-mx/laravel-recombee/Check%20&%20fix%20styling?label=code%20style" alt="GitHub Code Style Action Status"></a>
+<a href="https://github.com/jbaron-mx/laravel-recombee/actions/workflows/run-tests.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/jbaron-mx/laravel-recombee/run-tests.yml?label=tests&branch=main" alt="GitHub Tests Action Status"></a>
+<a href="https://github.com/jbaron-mx/laravel-recombee/actions/workflows/php-cs-fixer.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/jbaron-mx/laravel-recombee/php-cs-fixer.yml?label=code%20style&branch=main" alt="GitHub Code Style Action Status"></a>
 <a href="https://packagist.org/packages/jbaron-mx/laravel-recombee"><img src="https://img.shields.io/packagist/dt/jbaron-mx/laravel-recombee.svg?style=flat-square" alt="Total Downloads"></a>
 </p>
 
