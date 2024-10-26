@@ -15,9 +15,169 @@ This package is a [Recombee PHP SDK](https://github.com/Recombee/php-api-client)
 
 ---
 
+## Supports
+
+* **PHP:** 8.0, 8.1, 8.2
+* **Laravel:** 8, 9, 10, 11
+
+## Prerequisites
+
+1. Create an account in [Recombee](https://www.recombee.com/).
+2. Create a database within your account.
+
+## Installation & Setup
+
+Install with Composer:
+```sh
+composer require jbaron-mx/laravel-recombee
+```
+
+Publish config file:
+```sh
+php artisan vendor:publish --tag="recombee-config"
+```
+
+Add to your `.env` file:
+> Replace the values with your database details from Recombee.
+```env
+RECOMBEE_DATABASE="my-store"
+RECOMBEE_TOKEN="token"
+RECOMBEE_REGION="us-west"
+```
+
+Add your corresponding models to your `config/recombee.php`:
+```php
+'user' => App\Models\User::class,
+'item' => App\Models\Product::class,
+```
+
+Add `Recommendable` trait to your corresponding models:
+```php
+use Baron\Recombee\Recommendable;
+
+class User extends Authenticatable
+{
+    use Recommendable;
+    ...
+```
+```php
+use Baron\Recombee\Recommendable;
+
+class Product extends Model
+{
+    use Recommendable;
+    ...
+```
+
+## Quick Usage
+
+> For full documentation please visit the [wiki](https://github.com/jbaron-mx/laravel-recombee/wiki).
+
+Create properties in your Recombee database:
+```php
+use Baron\Recombee\Facades\Recombee;
+
+// Creating user properties
+Recombee::user()->properties([
+    'name' => 'string',
+    'age' => 'int',
+    'active' => 'boolean',
+])->save();
+
+// Creating item properties
+Recombee::item()->properties([
+    'description' => 'string',
+    'price' => 'double',
+    'available' => 'boolean',
+])->save();
+```
+
+Import users and items:
+> For batch import, please visit the [Batch Import](https://github.com/jbaron-mx/laravel-recombee/wiki/3.-Batch-Import) section in the wiki.
+```php
+use Baron\Recombee\Facades\Recombee;
+
+// Import a user
+Recombee::user($userId, [
+    'name' => 'John Doe',
+    'age' => 29,
+    'active' => true,
+])->save();
+
+// Import a user via model
+User::first()->recommendable();
+
+// Import an item
+Recombee::item($itemId, [
+    'description' => 'Magic Keyboard 3',
+    'price' => 59.99,
+    'available' => true,
+])->save();
+
+// Import an item via model
+Product::first()->recommendable();
+```
+
+Retrieve users and items:
+> get() returns an instance of `Collection` for which all its convenient methods are available, refer to [Laravel Docs for all available methods](https://laravel.com/docs/master/collections#available-methods).
+```php
+use Baron\Recombee\Facades\Recombee;
+
+// Basic get limited to 25 results by default
+Recombee::user()->get(); 
+Recombee::item()->get(); 
+
+// Same methods are available for users and items
+Recombee::item()
+    ->select('description', 'price', 'available')   // Select these properties only
+    ->take(50)                                      // Limited to 50 results
+    ->option('filter', "'price' > 25")              // Filtered by age
+    ->get()
+```
+
+Create interactions:
+```php
+use Baron\Recombee\Facades\Recombee;
+
+// User has viewed this item
+Recombee::user($userId)->viewed($itemId)->save();
+
+// User has purchased this item
+Recombee::user($userId)->purchased($itemId)->save();
+
+// User has rated this item (Scale from -1.0 to 1.0, see docs)
+Recombee::user($userId)->rated($itemId, 0.5)->save();
+
+// User has added this item to his cart
+Recombee::user($userId)->carted($itemId)->save();
+
+// User has bookmarked this item
+Recombee::user($userId)->bookmarked($itemId)->save();
+
+// User has partially viewed this item (Scale from 0 to 1, see docs)
+Recombee::user($userId)->viewedPortion($itemId, 0.5)->save();
+```
+
+Get personalized recomendations:
+```php
+use Baron\Recombee\Facades\Recombee;
+
+// Recommended items for a given user, typically used in a "Picked just for you" section.
+Recombee::user($userId)->recommendItems()->take(50)->get();
+
+// Recommended users for another given user, based on the user's past interactions and values of properties.
+Recombee::user($userId)->recommendUsers()->get();
+
+// Recommended items that are related to a given item, typically used in a "Similar Products" section.
+Recombee::item($itemId)->recommendItems()->get();
+
+// Recommended users that are likely to be interested in a given item.
+Recombee::item($itemId)->recommendUsers()->get();
+```
+
 ## Documentation
 
-Please visit our [wiki](https://github.com/jbaron-mx/laravel-recombee/wiki) for installation and usage instructions.
+Please visit the [wiki](https://github.com/jbaron-mx/laravel-recombee/wiki) for full documentation.
 
 ## Testing
 
@@ -39,7 +199,6 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [Jesus Baron](https://github.com/jbaron-mx)
 - [All Contributors](../../contributors)
 
 ## License
