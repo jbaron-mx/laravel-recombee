@@ -77,14 +77,24 @@ Create properties in your Recombee database:
 ```php
 use Baron\Recombee\Facades\Recombee;
 
-// Creating user properties
+// Create a user property
+Recombee::user()
+    ->property('active', 'boolean')    // 2nd argument is optional, string by default.
+    ->save();
+
+// Create multiple user properties
 Recombee::user()->properties([
     'name' => 'string',
     'age' => 'int',
     'active' => 'boolean',
 ])->save();
 
-// Creating item properties
+// Create an item property
+Recombee::item()
+    ->property('available', 'boolean')    // 2nd argument is optional, string by default.
+    ->save();
+
+// Create multiple item properties
 Recombee::item()->properties([
     'description' => 'string',
     'price' => 'double',
