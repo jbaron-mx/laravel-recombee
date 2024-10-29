@@ -131,7 +131,7 @@ Recombee::item()->get();
 Recombee::item()
     ->select('description', 'price', 'available')   // Select these properties only
     ->take(50)                                      // Limited to 50 results
-    ->option('filter', "'price' > 25")              // Filtered by age
+    ->option('filter', "'price' > 25")              // Filtered by price
     ->get()
 ```
 
