@@ -17,8 +17,8 @@ This package is a [Recombee PHP SDK](https://github.com/Recombee/php-api-client)
 
 ## Supports
 
-* **PHP:** 8.0, 8.1, 8.2
-* **Laravel:** 8, 9, 10, 11
+* **PHP:** 8.0, 8.1, 8.2, 8.3, 8.4, 8.5
+* **Laravel:** 8, 9, 10, 11, 12
 
 ## Prerequisites
 
