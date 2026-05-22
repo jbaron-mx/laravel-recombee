@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-recombee` will be documented in this file.
 
+## 0.2.2 - 2026-05-22
+
+Added support for Laravel 13 🎊
+
 ## 0.2.1 - 2026-02-03
 
 * Added support for Laravel 12 🎊
