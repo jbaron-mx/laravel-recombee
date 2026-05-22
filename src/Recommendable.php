@@ -15,7 +15,15 @@ trait Recommendable
 {
     public static function bootRecommendable()
     {
-        (new static())->registerRecommendableMacros();
+        $whenBootedCallback = function () {
+            (new static())->registerRecommendableMacros();
+        };
+
+        if (method_exists(static::class, 'whenBooted')) {
+            static::whenBooted($whenBootedCallback);
+        } else {
+            $whenBootedCallback();
+        }
     }
 
     public function registerRecommendableMacros()
